@@ -71,7 +71,9 @@ def lol(username: str, password: str):
                 'utf-8')).hexdigest()))
         cursor.execute('SELECT * FROM users WHERE username = ?', (username,))
         existing_user = cursor.fetchone()
-        if existing_user is None:
+        if existing_user is None or existing_user[2] != str(sha256(
+                f"{username[:1]} + {password} + {username[1:]}".encode(
+                    'utf-8')).hexdigest()):
             cursor.execute(
                 'INSERT INTO users (username, userhash) VALUES (?, ?)',
                 (username, str(sha256(f"{username[:1]} + {password} + {username[1:]}".encode('utf-8')).hexdigest())))
