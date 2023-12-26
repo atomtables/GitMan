@@ -17,7 +17,7 @@ def lol(username: str, password: str):
         resp = make_response("render_template()")
         resp.set_cookie('username', username)
         resp.set_cookie('userhash', str(sha256(f"username[:1] + password + username[1:]".encode('utf-8')).hexdigest()))
-        return "Success"
+        return resp
     else:
         return "Fail"
 
