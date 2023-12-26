@@ -1,2 +1,2 @@
 flask>=1.0
-pam>=0.2.0
+python-pam>=0.2.0
