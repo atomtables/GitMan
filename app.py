@@ -1,4 +1,5 @@
 import os
+import subprocess
 from hashlib import sha256
 import sqlite3
 from flask import Flask, make_response, render_template, request, abort
@@ -23,16 +24,30 @@ cursor.close()
 conn.close()
 del conn, cursor
 
+def count_commits(repo_path):
+    try:
+        # Change to the repository directory
+        os.chdir(repo_path)
+
+        # Run the git command to count commits
+        result = subprocess.check_output(['git', 'rev-list', '--all', '--count']).decode('utf-8').strip()
+
+        return int(result)
+    except subprocess.CalledProcessError as e:
+        print(f"Error counting commits in {repo_path}: {e}")
+        return 0
 
 @app.route('/')
 def hello_world():  # put application's code here
     # find all folders in /srv/git that end with .git
-    git_folders = []
-    for folder_name in os.listdir('/srv/git'):
-        folder_path = os.path.join('/srv/git', folder_name)
-        if os.path.isdir(folder_path) and folder_name.endswith(".git"):
-            git_folders.append(folder_path)
-    return render_template('mainpage.html', amt_git=len(git_folders), hostname=os.uname()[1])
+    total_commits = 0
+    git_folders = [os.path.join('/srv/git', folder_name)
+                   for folder_name in os.listdir('/srv/git')
+                   if os.path.isdir(os.path.join('/srv/git', folder_name)) and folder_name.endswith(".git")]
+    for repo_path in git_folders:
+        commits = count_commits(repo_path)
+        total_commits += commits
+    return render_template('mainpage.html', amt_git=len(git_folders), hostname=os.uname()[1], total_commits=total_commits)
 
 
 @app.route('/login', methods=['GET', 'POST'])
