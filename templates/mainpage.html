@@ -2,7 +2,7 @@
 
 {% block content %}
 
-    <div class="px-4 py-1 my-5 text-center">
+    <div class="px-4 py-5 my-5 text-center">
         <div class="text-center fw-bold">Welcome to GitMan on</div>
         <h1 class="display-5 fw-bold text-body-emphasis">{{ hostname }}</h1>
         <div class="col-lg-6 mx-auto">
@@ -13,4 +13,28 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // Function to generate a random gradient based on the hostname
+        function generateRandomColor(seed) {
+            const hash = seed.split('').reduce((acc, char) => char.charCodeAt(0) + (acc << 6) + (acc << 16) - acc, 0);
+            return '#' + (hash & 0x00FFFFFF).toString(16).toUpperCase(); // Generates a random color based on the seed
+        }
+
+        // Function to generate a random radial gradient color stop
+        function generateRandomColorStop(seed) {
+            const color = generateRandomColor(seed);
+            const percentage = Math.random() * 100;
+            return `${color} ${percentage}%`;
+        }
+
+        // Get the hostname from the template (replace 'example.com' with the actual hostname variable)
+        const hostname = {{ hostname }};
+
+        // Generate 5 different color stops for the radial gradient
+        const gradientColorStops = Array.from({ length: 5 }, (_, index) => generateRandomColorStop(`${hostname}${index + 1}`));
+
+        // Set the background color of the body with a radial gradient
+        document.body.style.background = `radial-gradient(${gradientColorStops.join(', ')})`;
+    </script>
 {% endblock %}
