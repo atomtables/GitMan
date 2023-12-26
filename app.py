@@ -70,7 +70,7 @@ def hello_world():  # put application's code here
         commits = count_commits(repo_path)
         total_commits += commits
     return render_template('mainpage.html', amt_git=len(git_folders), hostname=os.uname()[1],
-                           total_commits=total_commits)
+                           total_commits=total_commits, username=request.cookies.get('username', ''))
 
 
 @app.route('/login', methods=['GET', 'POST'])

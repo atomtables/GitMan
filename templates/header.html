@@ -17,7 +17,11 @@
         </li>
       </ul>
       <span class="navbar-text">
-        username
+        {% if username != '' %}
+          {{ username }}
+        {% else %}
+          <a class="btn btn-primary" href="/login">Login</a>
+        {% endif %}
       </span>
     </div>
   </div>
