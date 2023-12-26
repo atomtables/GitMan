@@ -46,6 +46,6 @@
         const gradientColorStops = Array.from({ length: 5 }, (_, index) => generateRandomColorStop(`${hostname}${index + Math.random()*100}`));
 
         // Set the background color of the body with a radial gradient
-        document.body.style.background = `radial-gradient(${gradientColorStops.join(', ')})`;
+        document.body.style.background = `linear-gradient(to right, ${gradientColorStops.join(', ')})`;
     </script>
 {% endblock %}
