@@ -45,7 +45,7 @@ def login_required(func):
             return redirect('/login', 403)
         conn = sqlite3.connect('users.db')
         cursor = conn.cursor()
-        cursor.execute('SELECT * FROM TABLE (users) WHERE username = ?', (request.cookies.get('username'),))
+        cursor.execute('SELECT * FROM users WHERE username = ?', (request.cookies.get('username'),))
         existing_user = cursor.fetchone()
         conn.commit()
         cursor.close()
