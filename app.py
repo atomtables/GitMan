@@ -47,6 +47,7 @@ def login_required(func):
         cursor = conn.cursor()
         cursor.execute('SELECT * FROM users WHERE username = ?', (request.cookies.get('username'),))
         existing_user = cursor.fetchone()
+        conn.commit()
         cursor.close()
         conn.close()
         if existing_user is None:
@@ -90,6 +91,7 @@ def login():
                                                                                             f"username[:1] + password + username[1:]".encode(
                                                                                                 'utf-8')).hexdigest())))
                 conn.commit()
+
             return resp
         else:
             abort(403)
@@ -114,6 +116,8 @@ def lol(username: str, password: str):
         elif existing_user[2] != userhash:
             cursor.execute('UPDATE users SET userhash = ? WHERE username = ?', (userhash, username))
             conn.commit()
+        cursor.close()
+        conn.close()
         return resp
     else:
         return "User: " + username + " Password: " + password + " is not valid because pam returned " + str(
