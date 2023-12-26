@@ -64,19 +64,17 @@ def lol(username: str, password: str):
     conn = sqlite3.connect('users.db')
     cursor = conn.cursor()
     if pam.authenticate(username, password):
+        userhash = str(sha256(f"{username[:1]} + {password} + {username[1:]}".encode('utf-8')).hexdigest())
         resp = make_response("Success");
         resp.set_cookie('username', username)
-        resp.set_cookie('userhash', str(sha256(
-            f"{username[:1]} + {password} + {username[1:]}".encode(
-                'utf-8')).hexdigest()))
+        resp.set_cookie('userhash', userhash)
         cursor.execute('SELECT * FROM users WHERE username = ?', (username,))
         existing_user = cursor.fetchone()
-        if existing_user is None or existing_user[2] != str(sha256(
-                f"{username[:1]} + {password} + {username[1:]}".encode(
-                    'utf-8')).hexdigest()):
-            cursor.execute(
-                'INSERT INTO users (username, userhash) VALUES (?, ?)',
-                (username, str(sha256(f"{username[:1]} + {password} + {username[1:]}".encode('utf-8')).hexdigest())))
+        if existing_user is None:
+            cursor.execute('INSERT INTO users (username, userhash) VALUES (?, ?)', (username, userhash))
+            conn.commit()
+        elif existing_user[2] != userhash:
+            cursor.execute('UPDATE users SET userhash = ? WHERE username = ?', (userhash, username))
             conn.commit()
         return resp
     else:
