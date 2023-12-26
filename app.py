@@ -52,7 +52,7 @@ def login_required(func):
         conn.commit()
         cursor.close()
         conn.close()
-        del conn, cursor
+        # del conn, cursor
         if existing_user is None:
             return redirect('/login', 403)
         if existing_user[2] != request.cookies.get('userhash'):
