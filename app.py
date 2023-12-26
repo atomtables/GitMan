@@ -45,9 +45,8 @@ def login_required(func):
             return redirect('/login', 403)
         conn = sqlite3.connect('users.db')
         cursor = conn.cursor()
-        #cursor.execute('SELECT * FROM users WHERE username = ?', (request.cookies.get('username'),))
-        #existing_user = cursor.fetchone()
-        existing_user = [1, 'atomtables', '7b3496c2391dbed03e4fc9777864eeb4773dd61a7d849a19863327c62c2ba0ea']
+        cursor.execute('SELECT * FROM users WHERE username = ?', (request.cookies.get('username'),))
+        existing_user = cursor.fetchone()
         if existing_user is None:
             return redirect('/login', 403)
         if existing_user[2] != request.cookies.get('userhash'):
