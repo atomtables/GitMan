@@ -48,6 +48,7 @@ def login_required(func):
         cursor.execute('SELECT * FROM users WHERE username = ?', (request.cookies.get('username'),))
         existing_user = cursor.fetchone()
         conn.commit()
+
         cursor.close()
         conn.close()
         if existing_user is None:
