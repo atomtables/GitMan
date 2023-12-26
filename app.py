@@ -56,6 +56,7 @@ def login_required(func):
         print("success")
         return func()
 
+    wrapper.__name__ = func.__name__
     return wrapper
 
 
