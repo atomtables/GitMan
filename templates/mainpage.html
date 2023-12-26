@@ -19,7 +19,7 @@
         function generateRandomColor(seed) {
             const hash = seed.split('').reduce((acc, char) => char.charCodeAt(0) + (acc << 6) + (acc << 16) - acc, 0);
             const baseColor = '#' + (hash & 0x00FFFFFF).toString(16).toUpperCase(); // Generates a random color based on the seed
-            return adjustBrightness(baseColor, -40);
+            return adjustBrightness(baseColor, -80);
         }
 
         function adjustBrightness(color, amount) {
