@@ -43,7 +43,7 @@
         const hostname = "{{ hostname }}";
 
         // Generate 5 different color stops for the radial gradient
-        const gradientColorStops = Array.from({ length: 5 }, (_, index) => generateRandomColorStop(`${hostname}${index + 1}`));
+        const gradientColorStops = Array.from({ length: 5 }, (_, index) => generateRandomColorStop(`${hostname}${index + Math.random()*100}`));
 
         // Set the background color of the body with a radial gradient
         document.body.style.background = `radial-gradient(${gradientColorStops.join(', ')})`;
