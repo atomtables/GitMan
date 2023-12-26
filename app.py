@@ -11,7 +11,10 @@ def hello_world():  # put application's code here
 
 @app.route('/authenticate/<username>/<password>')
 def lol(username: str, password: str):
-    pam.authenticate(username, password)
+    if pam.authenticate(username, password):
+        return "Success"
+    else:
+        return "Fail"
 
 
 if __name__ == "__main__":
