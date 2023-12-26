@@ -18,6 +18,10 @@ cursor.execute('''
         username TEXT NOT NULL,
         userhash TEXT NOT NULL
     )''')
+conn.commit()
+cursor.close()
+conn.close()
+del conn, cursor
 
 
 @app.route('/')
@@ -57,6 +61,8 @@ def login():
 
 @app.route('/authenticate/<username>/<password>')
 def lol(username: str, password: str):
+    conn = sqlite3.connect('users.db')
+    cursor = conn.cursor()
     if pam.authenticate(username, password):
         resp = make_response("Success")
         resp.set_cookie('username', username)
