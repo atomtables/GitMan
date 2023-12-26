@@ -29,7 +29,7 @@
         }
 
         // Get the hostname from the template (replace 'example.com' with the actual hostname variable)
-        const hostname = {{ hostname }};
+        const hostname = "{{ hostname }}";
 
         // Generate 5 different color stops for the radial gradient
         const gradientColorStops = Array.from({ length: 5 }, (_, index) => generateRandomColorStop(`${hostname}${index + 1}`));
