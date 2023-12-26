@@ -1,3 +1,4 @@
+import os
 from hashlib import sha256
 
 from flask import Flask, make_response, render_template, request, abort
@@ -8,7 +9,13 @@ app = Flask(__name__)
 
 @app.route('/')
 def hello_world():  # put application's code here
-    return '<h1>Hello World!</h1> <p>average yeet enjoyer</p>'
+    # find all folders in /srv/git that end with .git
+    git_folders = []
+    for folder_name in os.listdir('/srv/git'):
+        folder_path = os.path.join('/srv/git', folder_name)
+        if os.path.isdir(folder_path) and folder_name.endswith(".git"):
+            git_folders.append(folder_path)
+    return render_template('mainpage.html', amt_git=len(git_folders), hostname=os.uname()[1])
 
 
 @app.route('/login', methods=['GET', 'POST'])

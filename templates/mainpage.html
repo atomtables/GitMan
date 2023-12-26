@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>{{ hostname }}</h1>
+    <p>{{ amt_git }} git repositor{% if amt_git == 1 %}y{% else %}ies{% endif %}</p>
+{% endblock %}
