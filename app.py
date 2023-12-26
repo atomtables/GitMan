@@ -55,6 +55,7 @@ def login_required(func):
             return redirect('/login', 403)
         print("success")
         return func()
+
     return wrapper
 
 
@@ -96,6 +97,15 @@ def login():
             abort(403)
 
     return render_template('login.html')
+
+
+@app.route('/logout')
+@login_required
+def logout():
+    resp = make_response(redirect('/login'))
+    resp.set_cookie('username', '', expires=0)
+    resp.set_cookie('userhash', '', expires=0)
+    return resp
 
 
 @app.route('/authenticate/<username>/<password>')
