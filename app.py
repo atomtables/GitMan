@@ -6,12 +6,14 @@ from flask import Flask, make_response, render_template, request, abort, redirec
 import pam
 
 app = Flask(__name__)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+db_path = os.path.join(BASE_DIR, "users.db")
 
 # if users.db doesn't exist, create it
-if not os.path.isfile('users.db'):
-    open('users.db', 'w').close()
+if not os.path.isfile(db_path):
+    open(db_path, 'w').close()
 
-conn = sqlite3.connect('users.db')
+conn = sqlite3.connect(db_path)
 cursor = conn.cursor()
 cursor.execute('''
     CREATE TABLE IF NOT EXISTS users (
@@ -43,13 +45,14 @@ def login_required(func):
     def wrapper():
         if request.cookies.get('username') is None or request.cookies.get('userhash') is None:
             return redirect('/login', 403)
-        conn = sqlite3.connect('users.db')
+        conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
         cursor.execute('SELECT * FROM users WHERE username = ?', (request.cookies.get('username'),))
         existing_user = cursor.fetchone()
         conn.commit()
         cursor.close()
         conn.close()
+        del conn, cursor
         if existing_user is None:
             return redirect('/login', 403)
         if existing_user[2] != request.cookies.get('userhash'):
