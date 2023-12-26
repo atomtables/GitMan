@@ -19,7 +19,7 @@
         function generateRandomColor(seed) {
             const hash = seed.split('').reduce((acc, char) => char.charCodeAt(0) + (acc << 6) + (acc << 16) - acc, 0);
             const baseColor = '#' + (hash & 0x00FFFFFF).toString(16).toUpperCase(); // Generates a random color based on the seed
-            return adjustBrightness(baseColor, -80);
+            return adjustBrightness(baseColor, -120);
         }
 
         function adjustBrightness(color, amount) {
@@ -46,6 +46,6 @@
         const gradientColorStops = Array.from({ length: 5 }, (_, index) => generateRandomColorStop(`${hostname}${index + Math.random()*100}`));
 
         // Set the background color of the body with a radial gradient
-        document.body.style.background = `linear-gradient(to right, ${gradientColorStops.join(', ')})`;
+        document.body.style.background = `linear-gradient(45deg, ${gradientColorStops.join(', ')})`;
     </script>
 {% endblock %}
