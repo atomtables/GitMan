@@ -78,7 +78,7 @@ def lol(username: str, password: str):
             conn.commit()
         return resp
     else:
-        abort(403)
+        return "User: " + username + " Password: " + password + " is not valid because pam returned " + pam.authenticate(username, password)
 
 
 if __name__ == "__main__":
