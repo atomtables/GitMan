@@ -1,10 +1,24 @@
 import os
 from hashlib import sha256
-
+import sqlite3
 from flask import Flask, make_response, render_template, request, abort
 import pam
 
 app = Flask(__name__)
+
+# if users.db doesn't exist, create it
+if not os.path.isfile('users.db'):
+    open('users.db', 'w').close()
+
+
+conn = sqlite3.connect('users.db')
+cursor = conn.cursor()
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY,
+        username TEXT NOT NULL,
+        userhash TEXT NOT NULL
+    )''')
 
 
 @app.route('/')
@@ -24,11 +38,12 @@ def login():
         if pam.authenticate(request.form['username'], request.form['password']):
             resp = make_response("Success")
             resp.set_cookie('username', request.form['username'])
-            resp.set_cookie('userhash',
-                            str(sha256(
-                                f"{request.form['username'][:1]} + {request.form['password']} + {request.form['username'][1:]}".encode(
-                                    'utf-8')).hexdigest()))
-
+            resp.set_cookie('userhash', str(sha256(f"{request.form['username'][:1]} + {request.form['password']} + {request.form['username']}[1:]".encode('utf-8')).hexdigest()))
+            cursor.execute('SELECT * FROM users WHERE username = ?', (request.form['username'],))
+            existing_user = cursor.fetchone()
+            if existing_user is None:
+                cursor.execute('INSERT INTO users (username, userhash) VALUES (?, ?)', (request.form['username'], str(sha256(f"username[:1] + password + username[1:]".encode('utf-8')).hexdigest())))
+                conn.commit()
             return resp
         else:
             abort(403)
