@@ -2,7 +2,7 @@ import os
 import subprocess
 from hashlib import sha256
 import sqlite3
-from flask import Flask, make_response, render_template, request, abort
+from flask import Flask, make_response, render_template, request, abort, redirect
 import pam
 
 app = Flask(__name__)
@@ -24,6 +24,7 @@ cursor.close()
 conn.close()
 del conn, cursor
 
+
 def count_commits(repo_path):
     try:
         # Change to the repository directory
@@ -37,7 +38,29 @@ def count_commits(repo_path):
         print(f"Error counting commits in {repo_path}: {e}")
         return 0
 
+
+def login_required(func):
+    def wrapper():
+        if request.cookies.get('username') is None or request.cookies.get('userhash') is None:
+            redirect('/login', 403)
+            print("fail")
+        conn = sqlite3.connect('users.db')
+        cursor = conn.cursor()
+        cursor.execute('SELECT * FROM users WHERE username = ?', (request.cookies.get('username'),))
+        existing_user = cursor.fetchone()
+        if existing_user is None:
+            redirect('/login', 403)
+            print("fail")
+        if existing_user[2] != request.cookies.get('userhash'):
+            redirect('/login', 403)
+            print("fail")
+        print("success")
+        func()
+    return wrapper
+
+
 @app.route('/')
+@login_required
 def hello_world():  # put application's code here
     # find all folders in /srv/git that end with .git
     total_commits = 0
@@ -47,7 +70,8 @@ def hello_world():  # put application's code here
     for repo_path in git_folders:
         commits = count_commits(repo_path)
         total_commits += commits
-    return render_template('mainpage.html', amt_git=len(git_folders), hostname=os.uname()[1], total_commits=total_commits)
+    return render_template('mainpage.html', amt_git=len(git_folders), hostname=os.uname()[1],
+                           total_commits=total_commits)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -93,7 +117,8 @@ def lol(username: str, password: str):
             conn.commit()
         return resp
     else:
-        return "User: " + username + " Password: " + password + " is not valid because pam returned " + str(pam.authenticate(username, password))
+        return "User: " + username + " Password: " + password + " is not valid because pam returned " + str(
+            pam.authenticate(username, password))
 
 
 if __name__ == "__main__":
