@@ -75,7 +75,7 @@ def hello_world():  # put application's code here
                            total_commits=total_commits, username=request.cookies.get('username', ''))
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/signin', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         if pam.authenticate(request.form['username'], request.form['password']):
@@ -100,7 +100,7 @@ def login():
     return render_template('login.html')
 
 
-@app.route('/logout')
+@app.route('/signout')
 @login_required
 def logout():
     resp = make_response(redirect('/login'))
