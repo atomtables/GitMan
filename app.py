@@ -47,6 +47,8 @@ def login_required(func):
         cursor = conn.cursor()
         cursor.execute('SELECT * FROM users WHERE username = ?', (request.cookies.get('username'),))
         existing_user = cursor.fetchone()
+        cursor.close()
+        conn.close()
         if existing_user is None:
             return redirect('/login', 403)
         if existing_user[2] != request.cookies.get('userhash'):
