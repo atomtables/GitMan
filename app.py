@@ -103,7 +103,7 @@ def login():
 @app.route('/signout')
 @login_required
 def logout():
-    resp = make_response(redirect('/login'))
+    resp = make_response(redirect('/signin'))
     resp.set_cookie('username', '', expires=0)
     resp.set_cookie('userhash', '', expires=0)
     return resp
