@@ -55,7 +55,7 @@ def login_required(func):
             redirect('/login', 403)
             print("fail")
         print("success")
-        func()
+        return func()
     return wrapper
 
 
