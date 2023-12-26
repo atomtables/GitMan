@@ -10,7 +10,6 @@ app = Flask(__name__)
 if not os.path.isfile('users.db'):
     open('users.db', 'w').close()
 
-
 conn = sqlite3.connect('users.db')
 cursor = conn.cursor()
 cursor.execute('''
@@ -38,11 +37,16 @@ def login():
         if pam.authenticate(request.form['username'], request.form['password']):
             resp = make_response("Success")
             resp.set_cookie('username', request.form['username'])
-            resp.set_cookie('userhash', str(sha256(f"{request.form['username'][:1]} + {request.form['password']} + {request.form['username']}[1:]".encode('utf-8')).hexdigest()))
+            resp.set_cookie('userhash', str(sha256(
+                f"{request.form['username'][:1]} + {request.form['password']} + {request.form['username']}[1:]".encode(
+                    'utf-8')).hexdigest()))
             cursor.execute('SELECT * FROM users WHERE username = ?', (request.form['username'],))
             existing_user = cursor.fetchone()
             if existing_user is None:
-                cursor.execute('INSERT INTO users (username, userhash) VALUES (?, ?)', (request.form['username'], str(sha256(f"username[:1] + password + username[1:]".encode('utf-8')).hexdigest())))
+                cursor.execute('INSERT INTO users (username, userhash) VALUES (?, ?)', (request.form['username'],
+                                                                                        str(sha256(
+                                                                                            f"username[:1] + password + username[1:]".encode(
+                                                                                                'utf-8')).hexdigest())))
                 conn.commit()
             return resp
         else:
@@ -56,10 +60,19 @@ def lol(username: str, password: str):
     if pam.authenticate(username, password):
         resp = make_response("Success")
         resp.set_cookie('username', username)
-        resp.set_cookie('userhash', str(sha256(f"username[:1] + password + username[1:]".encode('utf-8')).hexdigest()))
+        resp.set_cookie('userhash', str(sha256(
+            f"{username[:1]} + {password} + {username[1:]}".encode(
+                'utf-8')).hexdigest()))
+        cursor.execute('SELECT * FROM users WHERE username = ?', (username,))
+        existing_user = cursor.fetchone()
+        if existing_user is None:
+            cursor.execute(
+                'INSERT INTO users (username, userhash) VALUES (?, ?)',
+                (username, str(sha256(f"{username[:1]} + {password} + {username[1:]}".encode('utf-8')).hexdigest())))
+            conn.commit()
         return resp
     else:
-        return "Fail"
+        abort(403)
 
 
 if __name__ == "__main__":
