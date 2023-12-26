@@ -64,7 +64,7 @@ def lol(username: str, password: str):
     conn = sqlite3.connect('users.db')
     cursor = conn.cursor()
     if pam.authenticate(username, password):
-        resp = make_response("Success")
+        resp = make_response("Success");
         resp.set_cookie('username', username)
         resp.set_cookie('userhash', str(sha256(
             f"{username[:1]} + {password} + {username[1:]}".encode(
