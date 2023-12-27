@@ -2,6 +2,7 @@ import os
 import sqlite3
 import subprocess
 from hashlib import sha256
+import git
 
 import pam
 from flask import Flask, make_response, render_template, request, redirect, flash
@@ -15,17 +16,14 @@ db_path = os.path.join(BASE_DIR, "users.db")
 if not os.path.isfile(db_path):
     open(db_path, 'w').close()
 
-conn = sqlite3.connect(db_path);
-cursor = conn.cursor()
+conn = sqlite3.connect(db_path); cursor = conn.cursor()
 cursor.execute('''
     CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY,
         username TEXT NOT NULL,
         userhash TEXT NOT NULL
     )''')
-conn.commit();
-cursor.close();
-conn.close()
+conn.commit(); cursor.close(); conn.close()
 
 
 @app.context_processor
@@ -55,8 +53,12 @@ def inject_user():
     })
 
 
-def is_git_directory(path='.'):
-    return subprocess.call(['git', '-C', path, 'status'], stderr=subprocess.STDOUT, stdout=open(os.devnull, 'w')) == 0
+def is_git_repo(path):
+    try:
+        _ = git.Repo(path).git_dir
+        return True
+    except git.exc.InvalidGitRepositoryError:
+        return False
 
 
 def count_commits(repo_path):
@@ -121,7 +123,7 @@ def mainpage():
     total_commits = 0
     git_folders = [os.path.join('/srv/git', folder_name)
                    for folder_name in os.listdir('/srv/git')
-                   if is_git_directory(os.path.join('/srv/git', folder_name))]
+                   if is_git_repo(os.path.join('/srv/git', folder_name))]
     for repo_path in git_folders:
         commits = count_commits(repo_path)
         total_commits += commits
