@@ -119,7 +119,8 @@ def login_not_required(func):
 @app.route('/')
 def mainpage():
     total_commits = 0
-    git_folders = [folder_name for folder_name in os.listdir('/srv/git')
+    git_folders = [os.path.join('/srv/git', folder_name)
+                   for folder_name in os.listdir('/srv/git')
                    if is_git_directory(os.path.join('/srv/git', folder_name))]
     for repo_path in git_folders:
         commits = count_commits(repo_path)
