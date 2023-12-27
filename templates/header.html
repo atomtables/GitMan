@@ -17,7 +17,7 @@
                     <a class="nav-link" href="#">Pricing</a>
                 </li>
             </ul>
-            <span class="navbar-text">
+            <span class="navbar-text p-0">
         {% if user.is_authenticated != False %}
             <button disabled class="btn btn-success">{{ user.username }}</button>
             <span style="width: 1px; display: inline-block;"></span>
@@ -25,7 +25,7 @@
         {% else %}
             <a class="btn btn-success" href="/signin">Sign In</a>
         {% endif %}
-      </span>
+            </span>
         </div>
     </div>
 </nav>

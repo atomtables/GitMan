@@ -18,11 +18,11 @@
 
 {% block content %}
     <script src="{{ url_for('static', filename='mainpageGradients.js') }}"></script>
-    <div class="d-flex align-items-center justify-content-center" style="min-height: 100vh;">
+    <div class="d-flex align-items-center justify-content-center" style="min-height: calc(100vh - 54px);">
         <div class="text-center">
             <div class="text-center fw-bold">Welcome to GitMan on</div>
             <h1 class="display-5 fw-bold text-body-emphasis" style="white-space: nowrap;">{{ hostname }}</h1>
-            <div class="col-lg-6 mx-auto text-center">
+            <div class="mx-auto text-center">
                 <p class="lead mb-4">{{ amt_git }} repositor{% if amt_git == 1 %}y{% else %}ies{% endif %}, {{ total_commits }} commit{% if total_commits != 1 %}s{% endif %}</p>
                 <div class="d-grid gap-2 d-md-flex justify-content-md-center">
                     <button type="button" class="btn btn-primary btn-lg px-4 gap-3">Primary button</button>
