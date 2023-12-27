@@ -111,7 +111,7 @@ def login():
         if pam.authenticate(username, password):
             flash(f"Successfully logged in as {username}", "success")
             userhash = str(sha256(f"{username[:1]} + {password} + {username[1:]}".encode('utf-8')).hexdigest())
-            resp = make_response("Success")
+            resp = redirect('/')
             resp.set_cookie('username', username)
             resp.set_cookie('userhash', userhash)
             cursor.execute('SELECT * FROM users WHERE username = ?', (username,))
