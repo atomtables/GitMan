@@ -1,9 +1,10 @@
 import os
+import sqlite3
 import subprocess
 from hashlib import sha256
-import sqlite3
-from flask import Flask, make_response, render_template, request, abort, redirect, flash
+
 import pam
+from flask import Flask, make_response, render_template, request, redirect, flash
 
 app = Flask(__name__)
 app.secret_key = "yowhatsgoodmyboy"
@@ -135,28 +136,28 @@ def login():
         password = request.form.get('password', '')
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
-        if (
-                pam.authenticate(username, password) and (
-                is_user_in_group(username, 'wheel') or
-                is_user_in_group(username, 'sudo') or
-                is_user_in_group(username, 'gitman')
-        )):
-            flash(f"Successfully logged in as {username}", "success")
-            userhash = str(sha256(f"{username[:1]} + {password} + {username[1:]}".encode('utf-8')).hexdigest())
-            resp = redirect('/')
-            resp.set_cookie('username', username)
-            resp.set_cookie('userhash', userhash)
-            cursor.execute('SELECT * FROM users WHERE username = ?', (username,))
-            existing_user = cursor.fetchone()
-            if existing_user is None:
-                cursor.execute('INSERT INTO users (username, userhash) VALUES (?, ?)', (username, userhash))
-                conn.commit()
-            elif existing_user[2] != userhash:
-                cursor.execute('UPDATE users SET userhash = ? WHERE username = ?', (userhash, username))
-                conn.commit()
-            cursor.close()
-            conn.close()
-            return resp
+        if pam.authenticate(username, password):
+            if not (is_user_in_group(username, 'wheel') or
+                    is_user_in_group(username, 'sudo') or
+                    is_user_in_group(username, 'gitman')):
+                flash("You are not authorised to use this service.", "danger")
+            else:
+                flash(f"Successfully logged in as {username}", "success")
+                userhash = str(sha256(f"{username[:1]} + {password} + {username[1:]}".encode('utf-8')).hexdigest())
+                resp = redirect('/')
+                resp.set_cookie('username', username)
+                resp.set_cookie('userhash', userhash)
+                cursor.execute('SELECT * FROM users WHERE username = ?', (username,))
+                existing_user = cursor.fetchone()
+                if existing_user is None:
+                    cursor.execute('INSERT INTO users (username, userhash) VALUES (?, ?)', (username, userhash))
+                    conn.commit()
+                elif existing_user[2] != userhash:
+                    cursor.execute('UPDATE users SET userhash = ? WHERE username = ?', (userhash, username))
+                    conn.commit()
+                cursor.close()
+                conn.close()
+                return resp
         else:
             flash(f"Invalid username/password combination. (Hint: use your authorised linux credentials)", "danger")
     return render_template('login.html')
