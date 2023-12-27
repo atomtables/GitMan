@@ -23,6 +23,7 @@ cursor.execute('''
         username TEXT NOT NULL,
         userhash TEXT NOT NULL
     )''')
+
 conn.commit(); cursor.close(); conn.close()
 
 
