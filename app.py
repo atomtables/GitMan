@@ -89,9 +89,7 @@ def login_required(func):
 
 
 @app.route('/')
-def mainpage():  # put application's code here
-    # find all folders in /srv/git that end with .git
-    flash("Hello World", "danger")
+def mainpage():
     total_commits = 0
     git_folders = [os.path.join('/srv/git', folder_name)
                    for folder_name in os.listdir('/srv/git')
@@ -111,6 +109,7 @@ def login():
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
         if pam.authenticate(username, password):
+            flash(f"Successfully logged in as {username}", "success")
             userhash = str(sha256(f"{username[:1]} + {password} + {username[1:]}".encode('utf-8')).hexdigest())
             resp = make_response("Success")
             resp.set_cookie('username', username)
@@ -127,8 +126,7 @@ def login():
             conn.close()
             return resp
         else:
-            return "User: " + username + " Password: " + password + " is not valid because pam returned " + str(
-                pam.authenticate(username, password))
+            flash(f"Invalid username/password combination. (Hint: use your authorised linux credentials)", "danger")
 
     return render_template('login.html')
 
