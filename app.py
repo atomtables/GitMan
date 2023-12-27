@@ -15,14 +15,17 @@ db_path = os.path.join(BASE_DIR, "users.db")
 if not os.path.isfile(db_path):
     open(db_path, 'w').close()
 
-conn = sqlite3.connect(db_path); cursor = conn.cursor()
+conn = sqlite3.connect(db_path);
+cursor = conn.cursor()
 cursor.execute('''
     CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY,
         username TEXT NOT NULL,
         userhash TEXT NOT NULL
     )''')
-conn.commit(); cursor.close(); conn.close()
+conn.commit();
+cursor.close();
+conn.close()
 
 
 @app.context_processor
@@ -50,6 +53,10 @@ def inject_user():
         'is_authenticated': True,
         'username': request.cookies.get('username')
     })
+
+
+def is_git_directory(path='.'):
+    return subprocess.call(['git', '-C', path, 'status'], stderr=subprocess.STDOUT, stdout=open(os.devnull, 'w')) == 0
 
 
 def count_commits(repo_path):
@@ -112,9 +119,8 @@ def login_not_required(func):
 @app.route('/')
 def mainpage():
     total_commits = 0
-    git_folders = [os.path.join('/srv/git', folder_name)
-                   for folder_name in os.listdir('/srv/git')
-                   if os.path.isdir(os.path.join('/srv/git', folder_name)) and folder_name.endswith(".git")]
+    git_folders = [folder_name for folder_name in os.listdir('/srv/git')
+                   if is_git_directory(os.path.join('/srv/git', folder_name))]
     for repo_path in git_folders:
         commits = count_commits(repo_path)
         total_commits += commits
