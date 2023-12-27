@@ -55,7 +55,6 @@ def inject_user():
         'username': request.cookies.get('username')
     })
 
-
 def count_commits(repo_path):
     try:
         # Change to the repository directory
@@ -88,6 +87,22 @@ def login_required(func):
     return wrapper
 
 
+# function wrapper that checks if user is not logged in, and if not redirects to /
+def login_not_required(func):
+    def wrapper():
+        if request.cookies.get('username') is not None and request.cookies.get('userhash') is not None:
+            conn = sqlite3.connect(db_path)
+            cursor = conn.cursor()
+            cursor.execute('SELECT * FROM users WHERE username = ?', (request.cookies.get('username'),))
+            existing_user = cursor.fetchone()
+            if existing_user is not None and existing_user[2] == request.cookies.get('userhash'):
+                return redirect('/', 302)
+        return func()
+
+    wrapper.__name__ = func.__name__
+    return wrapper
+
+
 @app.route('/')
 def mainpage():
     total_commits = 0
@@ -102,6 +117,7 @@ def mainpage():
 
 
 @app.route('/signin', methods=['GET', 'POST'])
+@login_not_required
 def login():
     if request.method == 'POST':
         username = request.form.get('username', '')
@@ -127,7 +143,6 @@ def login():
             return resp
         else:
             flash(f"Invalid username/password combination. (Hint: use your authorised linux credentials)", "danger")
-
     return render_template('login.html')
 
 
