@@ -72,16 +72,15 @@ def count_commits(repo_path):
 def login_required(func):
     def wrapper():
         if request.cookies.get('username') is None or request.cookies.get('userhash') is None:
-            return redirect('/signin', 403)
+            return redirect('/signin', 302)
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
         cursor.execute('SELECT * FROM users WHERE username = ?', (request.cookies.get('username'),))
         existing_user = cursor.fetchone()
         if existing_user is None:
-            return redirect('/signin', 403)
+            return redirect('/signin', 302)
         if existing_user[2] != request.cookies.get('userhash'):
-            return redirect('/signin', 403)
-        print("success")
+            return redirect('/signin', 302)
         return func()
 
     wrapper.__name__ = func.__name__
