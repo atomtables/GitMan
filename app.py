@@ -15,21 +15,16 @@ db_path = os.path.join(BASE_DIR, "users.db")
 if not os.path.isfile(db_path):
     open(db_path, 'w').close()
 
-conn = sqlite3.connect(db_path)
-cursor = conn.cursor()
+conn = sqlite3.connect(db_path); cursor = conn.cursor()
 cursor.execute('''
     CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY,
         username TEXT NOT NULL,
         userhash TEXT NOT NULL
     )''')
-conn.commit()
-cursor.close()
-conn.close()
-del conn, cursor
+conn.commit(); cursor.close(); conn.close()
 
 
-# context processor that passes if user is logged in and username through a users.___ dictionary
 @app.context_processor
 def inject_user():
     if request.cookies.get('username') is None or request.cookies.get('userhash') is None:
@@ -99,7 +94,6 @@ def login_required(func):
     return wrapper
 
 
-# function wrapper that checks if user is not logged in, and if not redirects to /
 def login_not_required(func):
     def wrapper():
         if request.cookies.get('username') is not None and request.cookies.get('userhash') is not None:
@@ -172,29 +166,13 @@ def logout():
     return resp
 
 
-@app.route('/authenticate/<username>/<password>')
-def authenticate(username: str, password: str):
-    conn = sqlite3.connect(db_path)
-    cursor = conn.cursor()
-    if pam.authenticate(username, password):
-        userhash = str(sha256(f"{username[:1]} + {password} + {username[1:]}".encode('utf-8')).hexdigest())
-        resp = make_response("Success");
-        resp.set_cookie('username', username)
-        resp.set_cookie('userhash', userhash)
-        cursor.execute('SELECT * FROM users WHERE username = ?', (username,))
-        existing_user = cursor.fetchone()
-        if existing_user is None:
-            cursor.execute('INSERT INTO users (username, userhash) VALUES (?, ?)', (username, userhash))
-            conn.commit()
-        elif existing_user[2] != userhash:
-            cursor.execute('UPDATE users SET userhash = ? WHERE username = ?', (userhash, username))
-            conn.commit()
-        cursor.close()
-        conn.close()
-        return resp
-    else:
-        return "User: " + username + " Password: " + password + " is not valid because pam returned " + str(
-            pam.authenticate(username, password))
+@app.route('/repositories')
+@login_required
+def repositories():
+    git_folders = [os.path.join('/srv/git', folder_name)
+                   for folder_name in os.listdir('/srv/git')
+                   if os.path.isdir(os.path.join('/srv/git', folder_name)) and folder_name.endswith(".git")]
+    return render_template('repositories.html', git_folders=git_folders)
 
 
 if __name__ == "__main__":
