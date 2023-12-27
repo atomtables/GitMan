@@ -15,6 +15,6 @@ function generateRandomColorStop(seed) {
     const color = generateRandomColor(seed);
     return `${color}`;
 }
-const gradientColorStops = Array.from({length: 5}, (_, index) => generateRandomColorStop(`${hostname}${index + Math.floor(Math.random() * 1000)}`));
+const gradientColorStops = Array.from({length: 5}, (_, index) => generateRandomColorStop(`${hostname}${index * Math.random() + Math.floor(Math.random() * 1000)}`));
 document.body.style.background = `linear-gradient(45deg, ${gradientColorStops.join(', ')})`;
 document.body.style.backgroundRepeat = 'no-repeat';
