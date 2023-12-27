@@ -27,6 +27,34 @@ conn.close()
 del conn, cursor
 
 
+# context processor that passes if user is logged in and username through a users.___ dictionary
+@app.context_processor
+def inject_user():
+    if request.cookies.get('username') is None or request.cookies.get('userhash') is None:
+        return dict(user={
+            'is_authenticated': False,
+            'username': None
+        })
+    conn = sqlite3.connect(db_path)
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM users WHERE username = ?', (request.cookies.get('username'),))
+    existing_user = cursor.fetchone()
+    if existing_user is None:
+        return dict(user={
+            'is_authenticated': False,
+            'username': None
+        })
+    if existing_user[2] != request.cookies.get('userhash'):
+        return dict(user={
+            'is_authenticated': False,
+            'username': None
+        })
+    return dict(user={
+        'is_authenticated': True,
+        'username': request.cookies.get('username')
+    })
+
+
 def count_commits(repo_path):
     try:
         # Change to the repository directory
