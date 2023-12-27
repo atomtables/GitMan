@@ -26,10 +26,10 @@
                 <p class="lead mb-4">{{ amt_git }} repositor{% if amt_git == 1 %}y{% else %}ies{% endif %}, {{ total_commits }} commit{% if total_commits != 1 %}s{% endif %}</p>
                 <div class="d-grid gap-2 d-md-flex justify-content-md-center">
                     {% if not user.is_authenticated %}
-                    <a class="btn btn-primary btn-lg" href="/login">Login</a>
+                    <a class="btn btn-primary btn-lg" href="/signin">Sign In</a>
                     {% else %}
-                    <button type="button" class="btn btn-primary btn-lg px-4 gap-3">Primary button</button>
-                    <button type="button" class="btn btn-outline-secondary btn-lg px-4">Secondary</button>
+                    <button type="button" class="btn btn-primary btn-lg px-4 gap-3">Repositories</button>
+                    <button type="button" class="btn btn-outline-secondary btn-lg px-4">Users</button>
                     {% endif %}
                 </div>
             </div>
