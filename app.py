@@ -91,7 +91,7 @@ def login_required(func):
 @app.route('/')
 def mainpage():  # put application's code here
     # find all folders in /srv/git that end with .git
-    flash("Hello World")
+    flash("Hello World", "danger")
     total_commits = 0
     git_folders = [os.path.join('/srv/git', folder_name)
                    for folder_name in os.listdir('/srv/git')
