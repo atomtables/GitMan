@@ -138,7 +138,7 @@ def logout():
 
 @app.route('/authenticate/<username>/<password>')
 def lol(username: str, password: str):
-    conn = sqlite3.connect('users.db')
+    conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     if pam.authenticate(username, password):
         userhash = str(sha256(f"{username[:1]} + {password} + {username[1:]}".encode('utf-8')).hexdigest())
