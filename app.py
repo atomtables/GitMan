@@ -2,7 +2,7 @@ import os
 import subprocess
 from hashlib import sha256
 import sqlite3
-from flask import Flask, make_response, render_template, request, abort, redirect
+from flask import Flask, make_response, render_template, request, abort, redirect, flash
 import pam
 
 app = Flask(__name__)
@@ -90,6 +90,7 @@ def login_required(func):
 @app.route('/')
 def mainpage():  # put application's code here
     # find all folders in /srv/git that end with .git
+    flash("Hello World")
     total_commits = 0
     git_folders = [os.path.join('/srv/git', folder_name)
                    for folder_name in os.listdir('/srv/git')
@@ -104,24 +105,29 @@ def mainpage():  # put application's code here
 @app.route('/signin', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        if pam.authenticate(request.form['username'], request.form['password']):
+        username = request.form.get('username', '')
+        password = request.form.get('password', '')
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+        if pam.authenticate(username, password):
+            userhash = str(sha256(f"{username[:1]} + {password} + {username[1:]}".encode('utf-8')).hexdigest())
             resp = make_response("Success")
-            resp.set_cookie('username', request.form['username'])
-            resp.set_cookie('userhash', str(sha256(
-                f"{request.form['username'][:1]} + {request.form['password']} + {request.form['username']}[1:]".encode(
-                    'utf-8')).hexdigest()))
-            cursor.execute('SELECT * FROM users WHERE username = ?', (request.form['username'],))
+            resp.set_cookie('username', username)
+            resp.set_cookie('userhash', userhash)
+            cursor.execute('SELECT * FROM users WHERE username = ?', (username,))
             existing_user = cursor.fetchone()
             if existing_user is None:
-                cursor.execute('INSERT INTO users (username, userhash) VALUES (?, ?)', (request.form['username'],
-                                                                                        str(sha256(
-                                                                                            f"username[:1] + password + username[1:]".encode(
-                                                                                                'utf-8')).hexdigest())))
+                cursor.execute('INSERT INTO users (username, userhash) VALUES (?, ?)', (username, userhash))
                 conn.commit()
-
+            elif existing_user[2] != userhash:
+                cursor.execute('UPDATE users SET userhash = ? WHERE username = ?', (userhash, username))
+                conn.commit()
+            cursor.close()
+            conn.close()
             return resp
         else:
-            abort(403)
+            return "User: " + username + " Password: " + password + " is not valid because pam returned " + str(
+                pam.authenticate(username, password))
 
     return render_template('login.html')
 
