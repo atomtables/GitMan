@@ -88,8 +88,7 @@ def login_required(func):
 
 
 @app.route('/')
-@login_required
-def hello_world():  # put application's code here
+def mainpage():  # put application's code here
     # find all folders in /srv/git that end with .git
     total_commits = 0
     git_folders = [os.path.join('/srv/git', folder_name)
@@ -99,7 +98,7 @@ def hello_world():  # put application's code here
         commits = count_commits(repo_path)
         total_commits += commits
     return render_template('mainpage.html', amt_git=len(git_folders), hostname=os.uname()[1],
-                           total_commits=total_commits, username=request.cookies.get('username', ''))
+                           total_commits=total_commits)
 
 
 @app.route('/signin', methods=['GET', 'POST'])
@@ -137,7 +136,7 @@ def logout():
 
 
 @app.route('/authenticate/<username>/<password>')
-def lol(username: str, password: str):
+def authenticate(username: str, password: str):
     conn = sqlite3.connect(db_path)
     cursor = conn.cursor()
     if pam.authenticate(username, password):
