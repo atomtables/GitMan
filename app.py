@@ -55,6 +55,7 @@ def inject_user():
         'username': request.cookies.get('username')
     })
 
+
 def count_commits(repo_path):
     try:
         # Change to the repository directory
@@ -67,6 +68,16 @@ def count_commits(repo_path):
     except subprocess.CalledProcessError as e:
         print(f"Error counting commits in {repo_path}: {e}")
         return 0
+
+
+def is_user_in_group(username, group):
+    try:
+        result = subprocess.run(['id', '-nG', username], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
+                                check=True)
+        groups = result.stdout.strip().split()
+        return group in groups
+    except subprocess.CalledProcessError as e:
+        return False
 
 
 def login_required(func):
@@ -124,7 +135,12 @@ def login():
         password = request.form.get('password', '')
         conn = sqlite3.connect(db_path)
         cursor = conn.cursor()
-        if pam.authenticate(username, password):
+        if (
+                pam.authenticate(username, password) and (
+                is_user_in_group(username, 'wheel') or
+                is_user_in_group(username, 'sudo') or
+                is_user_in_group(username, 'gitman')
+        )):
             flash(f"Successfully logged in as {username}", "success")
             userhash = str(sha256(f"{username[:1]} + {password} + {username[1:]}".encode('utf-8')).hexdigest())
             resp = redirect('/')
