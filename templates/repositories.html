@@ -2,17 +2,20 @@
 
 {% block content %}
     <script src="{{ url_for('static', filename='mainpageGradients.js') }}"></script>
-    <h1 class="text-center mo-5">Repositories</h1>
-    <div class="list-group w-75 m-auto">
-        {% for repo in repositories %}
-            <a href="#" class="list-group-item list-group-item-action">
-                <div class="d-flex w-100 justify-content-between">
-                    <h5 class="mb-1">{{ repo.name }}</h5>
-                    <small class="text-body-secondary">{{ repo.commits }} commit{% if repo.commits != 1 %}s{% endif %}</small>
-                </div>
-                <p class="mb-1">{{ repo.description }}</p>
-                <small class="text-body-secondary">And some muted small print.</small>
-            </a>
-        {% endfor %}
+    <div class="container-fluid">
+        <h1 class="text-center mt-3">Repositories</h1>
+        <div class="list-group w-75 m-auto">
+            {% for repo in repositories %}
+                <a href="#" class="list-group-item list-group-item-action">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1">{{ repo.name }}</h5>
+                        <small class="text-body-secondary">{{ repo.commits }} commit{% if repo.commits != 1 %}
+                            s{% endif %}</small>
+                    </div>
+                    <p class="mb-1">{{ repo.description }}</p>
+                    <small class="text-body-secondary">And some muted small print.</small>
+                </a>
+            {% endfor %}
+        </div>
     </div>
 {% endblock %}
