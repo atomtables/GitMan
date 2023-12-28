@@ -7,7 +7,7 @@
             <a href="#" class="list-group-item list-group-item-action">
                 <div class="d-flex w-100 justify-content-between">
                     <h5 class="mb-1">{{ repo.name }}</h5>
-                    <small class="text-body-secondary">{{ repo.commits }}</small>
+                    <small class="text-body-secondary">{{ repo.commits }} commit{% if repo.commits != 1 %}s{% endif %}</small>
                 </div>
                 <p class="mb-1">{{ repo.description }}</p>
                 <small class="text-body-secondary">And some muted small print.</small>
