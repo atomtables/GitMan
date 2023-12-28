@@ -189,7 +189,7 @@ def repositories():
         gitinfo_path = os.path.join(folder, "gitinfo")
         if os.path.isfile(gitinfo_path):
             with open(gitinfo_path, 'r') as f:
-                gitinfo = json.loads(f.read())
+                gitinfo = json.loads(f.read().strip())
                 name = gitinfo.get('name', '')
                 description = gitinfo.get('description', '')
         else:
