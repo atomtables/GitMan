@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
+        <script src="{{ url_for('static', filename='mainpageGradients.js') }}"></script>
+
     <h1 class="text-center">Repositories</h1>
     <div class="list-group w-75 m-auto">
         {% for repo in repositories %}
