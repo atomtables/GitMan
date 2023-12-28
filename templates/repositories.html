@@ -5,7 +5,7 @@
     <ul class="list-group">
         {% for repo in git_folders %}
             <li class="list-group-item">
-                <a href="">{{ repo.name }}</a>
+                <a href="">{{ repo[name] }}</a>
                 <p>{{ repo.description }}</p>
                 <p>{{ repo.remote }}</p>
             </li>
