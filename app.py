@@ -202,7 +202,7 @@ def repositories():
             'remote': remote
         })
 
-    return render_template('repositories.html', git_folders=git_folders)
+    return render_template('repositories.html', repositories=repositories)
 
 
 if __name__ == "__main__":
