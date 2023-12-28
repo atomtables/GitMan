@@ -3,7 +3,10 @@
 {% block content %}
     <script src="{{ url_for('static', filename='mainpageGradients.js') }}"></script>
     <div class="container-fluid">
-        <h1 class="text-center mt-3">Repositories</h1>
+        <div class="d-flex">
+            <h1 class="text-center mt-3">Repositories</h1>
+            <button class="btn btn-primary ml-auto mr-3 mt-3" onclick="window.location.href='/repositories/new-repo'">New Repository</button>
+        </div>
         <div class="list-group w-75 m-auto">
             {% for repo in repositories %}
                 <a href="#" class="list-group-item list-group-item-action">
