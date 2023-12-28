@@ -2,13 +2,16 @@
 
 {% block content %}
     <h1 class="text-center">Repositories</h1>
-    <ul class="list-group w-75 m-auto">
+    <div class="list-group w-75 m-auto">
         {% for repo in repositories %}
-            <li class="list-group-item">
-                <a href=""><h2>{{ repo.name }}</h2></a>
-                <p>{{ repo.description }}</p>
-                <p>{{ repo.remote }}</p>
-            </li>
+            <a href="#" class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">{{ repo.name }}</h5>
+                    <small class="text-body-secondary">{{ repo.commits }}</small>
+                </div>
+                <p class="mb-1">{{ repo.description }}</p>
+                <small class="text-body-secondary">And some muted small print.</small>
+            </a>
         {% endfor %}
-    </ul>
+    </div>
 {% endblock %}

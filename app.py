@@ -199,6 +199,7 @@ def repositories():
         repositories.append({
             'name': name,
             'description': description,
+            'commits': count_commits(folder),
             'remote': remote
         })
 
