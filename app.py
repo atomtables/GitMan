@@ -1,3 +1,4 @@
+import json
 import os
 import sqlite3
 import subprocess
@@ -182,6 +183,25 @@ def repositories():
     git_folders = [os.path.join('/srv/git', folder_name)
                    for folder_name in os.listdir('/srv/git')
                    if os.path.isdir(os.path.join('/srv/git', folder_name)) and folder_name.endswith(".git")]
+    repositories = []
+    for folder in git_folders:
+        name: str; description: str; remote: str
+        gitinfo_path = os.path.join(folder, "gitinfo")
+        if os.path.isfile(gitinfo_path):
+            with open(gitinfo_path, 'r') as f:
+                gitinfo = json.loads(f.read())
+                name = gitinfo.get('name', '')
+                description = gitinfo.get('description', '')
+        else:
+            name = folder.split('/')[-1].split('.')[0]
+            description = ''
+        remote = f"{request.cookies.get('username')}@{os.uname()[1]}:{folder}"
+        repositories.append({
+            'name': name,
+            'description': description,
+            'remote': remote
+        })
+
     return render_template('repositories.html', git_folders=git_folders)
 
 
