@@ -3,6 +3,8 @@ import os
 import sqlite3
 import subprocess
 from hashlib import sha256
+from pwd import getpwuid
+
 import git
 
 import pam
@@ -190,12 +192,10 @@ def repositories():
         if os.path.isfile(gitinfo_path):
             with open(gitinfo_path, 'r') as f:
                 gitinfo = json.loads(f.read().strip())
-                name = gitinfo.get('name', '')
+                name = gitinfo.get('name', folder.split('/')[-1].split('.')[0])
                 description = gitinfo.get('description', '')
                 # get the creator of the folder. this will either be in gitinfo or the owner of the folder
-                creator = gitinfo.get('creator', '')
-                if creator == '':
-                    creator = os.stat(folder).st_uid
+                creator = gitinfo.get('creator', getpwuid(os.stat(folder).st_uid).pw_name)
         else:
             name = folder.split('/')[-1].split('.')[0]
             description = ''
