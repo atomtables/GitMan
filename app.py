@@ -192,6 +192,10 @@ def repositories():
                 gitinfo = json.loads(f.read().strip())
                 name = gitinfo.get('name', '')
                 description = gitinfo.get('description', '')
+                # get the creator of the folder. this will either be in gitinfo or the owner of the folder
+                creator = gitinfo.get('creator', '')
+                if creator == '':
+                    creator = os.stat(folder).st_uid
         else:
             name = folder.split('/')[-1].split('.')[0]
             description = ''
@@ -200,7 +204,8 @@ def repositories():
             'name': name,
             'description': description,
             'commits': count_commits(folder),
-            'remote': remote
+            'remote': remote,
+            'creator': creator
         })
 
     return render_template('repositories.html', repositories=repositories)
