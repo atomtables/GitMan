@@ -6,7 +6,7 @@
         {% for repo in git_folders %}
 
             <li class="list-group-item">
-                {% for key, value in dict_item.items() %}
+                {% for key, value in repo.items() %}
                     <a href="">{{ value }}</a>
 
                 {% endfor %}
