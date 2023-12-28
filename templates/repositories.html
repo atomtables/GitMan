@@ -4,8 +4,12 @@
     <h1 class="text-center">Repositories</h1>
     <ul class="list-group">
         {% for repo in git_folders %}
+
             <li class="list-group-item">
-                <a href="">{{ repo[name] }}</a>
+                {% for key, value in dict_item.items() %}
+                    <a href="">{{ value }}</a>
+
+                {% endfor %}
                 <p>{{ repo.description }}</p>
                 <p>{{ repo.remote }}</p>
             </li>
