@@ -9,6 +9,7 @@ import git
 
 import pam
 from flask import Flask, make_response, render_template, request, redirect, flash
+from git import Repo
 
 app = Flask(__name__)
 app.secret_key = "yowhatsgoodmyboy"
@@ -63,6 +64,12 @@ def is_git_repo(path):
         return True
     except git.exc.InvalidGitRepositoryError:
         return False
+
+
+def get_last_commit_time(repo_path):
+    repo = Repo(repo_path)
+    last_commit = next(repo.iter_commits())
+    return last_commit.committed_datetime
 
 
 def count_commits(repo_path):
@@ -185,6 +192,7 @@ def repositories():
     git_folders = [os.path.join('/srv/git', folder_name)
                    for folder_name in os.listdir('/srv/git')
                    if os.path.isdir(os.path.join('/srv/git', folder_name)) and folder_name.endswith(".git")]
+    sorted(git_folders, key=get_last_commit_time)
     repositories = []
     for folder in git_folders:
         name: str; description: str; remote: str
