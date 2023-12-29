@@ -73,7 +73,7 @@ def get_last_commit_time(repo_path):
         last_commit = next(repo.iter_commits())
         return last_commit.committed_datetime
     except Exception as e:
-        return datetime.date(1970, 1, 1)
+        return datetime.datetime(1970, 1, 1)
 
 
 def count_commits(repo_path):
