@@ -9,6 +9,7 @@ from pwd import getpwuid
 import git
 
 import pam
+import psutil
 from flask import Flask, make_response, render_template, request, redirect, flash
 from git import Repo
 
@@ -229,6 +230,14 @@ def repositories():
         })
 
     return render_template('repositories.html', repositories=repositories)
+
+
+@app.route('/users')
+@login_required
+def userlist():
+    # get users from system
+    user_list = psutil.users()
+    return render_template('users.html', user_list=user_list)
 
 
 if __name__ == "__main__":

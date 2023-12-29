@@ -3,3 +3,4 @@ python-pam>=0.2.0
 six>=1.16.0
 gitpython>=3.1.40
 pip>=23.3.0
+psutil>=5.9.7
