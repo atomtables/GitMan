@@ -192,7 +192,7 @@ def repositories():
     git_folders = [os.path.join('/srv/git', folder_name)
                    for folder_name in os.listdir('/srv/git')
                    if os.path.isdir(os.path.join('/srv/git', folder_name)) and folder_name.endswith(".git")]
-    git_folders = sorted(git_folders, key=get_last_commit_time)
+    git_folders = sorted(git_folders, key=get_last_commit_time, reverse=True)
     print(git_folders)
     repositories = []
     for folder in git_folders:
