@@ -1,3 +1,4 @@
+import datetime
 import json
 import os
 import sqlite3
@@ -67,9 +68,12 @@ def is_git_repo(path):
 
 
 def get_last_commit_time(repo_path):
-    repo = Repo(repo_path)
-    last_commit = next(repo.iter_commits())
-    return last_commit.committed_datetime
+    try:
+        repo = Repo(repo_path)
+        last_commit = next(repo.iter_commits())
+        return last_commit.committed_datetime
+    except Exception as e:
+        return datetime.date(1970, 1, 1)
 
 
 def count_commits(repo_path):
@@ -199,15 +203,21 @@ def repositories():
         name: str; description: str; remote: str
         gitinfo_path = os.path.join(folder, "gitinfo")
         if os.path.isfile(gitinfo_path):
-            with open(gitinfo_path, 'r') as f:
-                gitinfo = json.loads(f.read().strip())
-                name = gitinfo.get('name', folder.split('/')[-1].split('.')[0])
-                description = gitinfo.get('description', '')
-                # get the creator of the folder. this will either be in gitinfo or the owner of the folder
-                creator = gitinfo.get('creator', getpwuid(os.stat(folder).st_uid).pw_name)
+            try:
+                with open(gitinfo_path, 'r') as f:
+                    gitinfo = json.loads(f.read().strip())
+                    name = gitinfo.get('name', folder.split('/')[-1].split('.')[0])
+                    description = gitinfo.get('description', '')
+                    # get the creator of the folder. this will either be in gitinfo or the owner of the folder
+                    creator = gitinfo.get('creator', getpwuid(os.stat(folder).st_uid).pw_name)
+            except json.decoder.JSONDecodeError:
+                name = folder.split('/')[-1].split('.')[0]
+                description = ''
+                creator = getpwuid(os.stat(folder).st_uid).pw_name
         else:
             name = folder.split('/')[-1].split('.')[0]
             description = ''
+            creator = getpwuid(os.stat(folder).st_uid).pw_name
         remote = f"{request.cookies.get('username')}@{os.uname()[1]}:{folder}"
         repositories.append({
             'name': name,
