@@ -73,6 +73,7 @@ def get_last_commit_time(repo_path):
         last_commit = next(repo.iter_commits())
         return last_commit.committed_datetime
     except Exception as e:
+        print(f"Error getting last commit time in {repo_path}: {e}")
         return datetime.datetime(1970, 1, 1)
 
 
