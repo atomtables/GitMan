@@ -235,10 +235,19 @@ def repositories():
 @app.route('/users')
 @login_required
 def userlist():
-    # get users from system
-    user_list = psutil.users()
-    print(user_list)
-    return render_template('users.html', user_list=user_list)
+    users = []
+    user_list = [user.name for user in psutil.users()]
+    for user in user_list:
+        groups = os.getgroups()
+        users.append({
+            'username': user,
+            'is_sudo': is_user_in_group(user, 'sudo'),
+            'is_wheel': is_user_in_group(user, 'wheel'),
+            'is_gitman': is_user_in_group(user, 'gitman'),
+            'is_admin': is_user_in_group(user, 'admin'),
+            'is_active': True if user in user_list else False
+        })
+    return render_template('users.html', users=users)
 
 
 if __name__ == "__main__":
