@@ -10,7 +10,7 @@
         <div class="list-group w-75 m-auto">
             {% for user in users %}
                 <div class="list-group-item">
-                    <div class="d-flex">
+                    <div class="d-flex w-100 justify-content-between">
                         <h5 class="mb-1">{{ user.username }}</h5>
                         {% if user.is_sudo %}
                             <span class="badge text-bg-success">Admin</span>
