@@ -1,6 +1,8 @@
 import datetime
+import grp
 import json
 import os
+import pwd
 import sqlite3
 import subprocess
 from hashlib import sha256
@@ -236,9 +238,10 @@ def repositories():
 @login_required
 def userlist():
     users = []
-    user_list = [user.name for user in psutil.users()]
+    user_list = []
+    for p in pwd.getpwall():
+        user_list.append(grp.getgrgid(p[3])[0])
     for user in user_list:
-        groups = os.getgroups()
         users.append({
             'username': user,
             'is_sudo': is_user_in_group(user, 'sudo'),
