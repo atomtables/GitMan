@@ -1,5 +1,4 @@
 import datetime
-import grp
 import json
 import os
 import pwd
@@ -9,9 +8,7 @@ from hashlib import sha256
 from pwd import getpwuid
 
 import git
-
 import pam
-import psutil
 from flask import Flask, make_response, render_template, request, redirect, flash
 from git import Repo
 
@@ -242,11 +239,8 @@ def userlist():
     for user in user_list:
         users.append({
             'username': user,
-            'is_sudo': is_user_in_group(user, 'sudo'),
-            'is_wheel': is_user_in_group(user, 'wheel'),
-            'is_gitman': is_user_in_group(user, 'gitman'),
-            'is_admin': is_user_in_group(user, 'admin'),
-            'is_active': True if user in user_list else False
+            'is_user': True if user == request.cookies.get('username') else False,
+            'is_sudo': is_user_in_group(user, 'sudo') or is_user_in_group(user, 'wheel'),
         })
     return render_template('users.html', users=users)
 

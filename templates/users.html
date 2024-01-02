@@ -8,16 +8,11 @@
             </button>
         </div>
         <div class="list-group w-75 m-auto">
-            {{ users }}
             {% for user in users %}
                 <div class="list-group-item">
-                    <h5 class="mb-1">{{ user.username }}</h5>
-                    <p class="mb-1">Sudo: {{ user.is_sudo }}</p>
-                    <p class="mb-1">Wheel: {{ user.is_wheel }}</p>
-                    <p class="mb-1">Gitman: {{ user.is_gitman }}</p>
-                    <p class="mb-1">Admin: {{ user.is_admin }}</p>
-                    <p class="mb-1">Active: {{ user.is_active }}</p>
-                    <a href="">Edit</a>
+                    <div class="d-flex">
+                        <h5 class="mb-1">{{ user.username }}</h5>
+                    </div>
                 </div>
             {% endfor %}
         </div>
