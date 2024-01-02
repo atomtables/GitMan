@@ -237,7 +237,7 @@ def repositories():
 def userlist():
     # get users from system
     user_list = psutil.users()
-
+    print(user_list)
     return render_template('users.html', user_list=user_list)
 
 
