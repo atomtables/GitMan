@@ -13,8 +13,13 @@
                     <div class="d-flex w-100 justify-content-between f-10">
                         <h5 class="mb-1">{{ user.username }}</h5>
                         {% if user.is_sudo %}
-                            <span class="badge text-bg-success rounded-pill" style="font-size: 1rem;"><small>Admin</small></span>
-                        {% endif %}
+                            <span class="badge text-bg-success" style="font-size: 1rem;">Admin</span>
+                        {% elif user.is_rw %}
+                            <span class="badge text-bg-warning" style="font-size: 1rem;">Read-Write</span>
+                        {% elif user.is_r %}
+                            <span class="badge text-bg-info" style="font-size: 1rem;">Read-Only</span>
+                        {% else %}
+                            <span class="badge text-bg-info" style="font-size: 1rem;">No Access</span>
                     </div>
                 </div>
             {% endfor %}

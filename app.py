@@ -11,6 +11,7 @@ import git
 import pam
 from flask import Flask, make_response, render_template, request, redirect, flash
 from git import Repo
+from . import settings as s
 
 app = Flask(__name__)
 app.secret_key = "yowhatsgoodmyboy"
@@ -236,13 +237,36 @@ def repositories():
 def userlist():
     users = []
     user_list = list(map(lambda i: i[0], filter(lambda i: int(i[2]) >= 1000, pwd.getpwall()))); user_list.remove("nobody")
+    user_list.insert(0, user_list.pop(user_list.index(request.cookies.get('username', ''))))
     for user in user_list:
         users.append({
             'username': user,
-            'is_user': True if user == request.cookies.get('username') else False,
-            'is_sudo': is_user_in_group(user, 'sudo') or is_user_in_group(user, 'wheel'),
+            'is_sudo': user_in_admin_group(user, s.admin_groups),
+            'is_rw': user_in_rw_group(user, s.rw_groups),
+            'is_r': user_in_r_group(user, s.r_groups)
         })
     return render_template('users.html', users=users)
+
+
+def user_in_admin_group(user: str, admin_groups: list) -> bool:
+    for group in admin_groups:
+        if is_user_in_group(user, group):
+            return True
+    return False
+
+
+def user_in_rw_group(user: str, rw_groups: list) -> bool:
+    for group in rw_groups:
+        if is_user_in_group(user, group):
+            return True
+    return False
+
+
+def user_in_r_group(user: str, r_groups: list) -> bool:
+    for group in r_groups:
+        if is_user_in_group(user, group):
+            return True
+    return False
 
 
 if __name__ == "__main__":
