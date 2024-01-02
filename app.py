@@ -238,9 +238,7 @@ def repositories():
 @login_required
 def userlist():
     users = []
-    user_list = []
-    for p in pwd.getpwall():
-        user_list.append(grp.getgrgid(p[3])[0] if p[0] > 1000 else None)
+    user_list = list(map(lambda i: i[0], filter(lambda i: int(i[2]) >= 1000, pwd.getpwall())))
     for user in user_list:
         users.append({
             'username': user,
