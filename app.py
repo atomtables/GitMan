@@ -240,7 +240,7 @@ def userlist():
     users = []
     user_list = []
     for p in pwd.getpwall():
-        user_list.append(grp.getgrgid(p[3])[0])
+        user_list.append(grp.getgrgid(p[3])[0] if p[0] > 1000 else None)
     for user in user_list:
         users.append({
             'username': user,
