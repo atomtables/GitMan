@@ -11,7 +11,7 @@ import git
 import pam
 from flask import Flask, make_response, render_template, request, redirect, flash
 from git import Repo
-from . import settings as s
+import settings as s
 
 app = Flask(__name__)
 app.secret_key = "yowhatsgoodmyboy"
