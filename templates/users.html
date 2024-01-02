@@ -11,7 +11,7 @@
             {% for user in users %}
                 <div class="list-group-item">
                     <div class="d-flex w-100 justify-content-between f-10">
-                        <h5 class="mb-1">{{ user.username }}</h5>
+                        <h5 class="mb-0">{{ user.username }}</h5>
                         {% if user.is_sudo %}
                             <span class="badge text-bg-success" style="font-size: 1rem;">Admin</span>
                         {% elif user.is_rw %}
