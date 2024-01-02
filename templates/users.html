@@ -1,20 +1,27 @@
 {% extends "base.html" %}
 
 {% block content %}
-
-    <div class="list-group w-75 m-auto">
-        {{ users }}
-        {% for user in users %}
-            <div class="list-group-item">
-                <h5 class="mb-1">{{ user.username }}</h5>
-                <p class="mb-1">Sudo: {{ user.is_sudo }}</p>
-                <p class="mb-1">Wheel: {{ user.is_wheel }}</p>
-                <p class="mb-1">Gitman: {{ user.is_gitman }}</p>
-                <p class="mb-1">Admin: {{ user.is_admin }}</p>
-                <p class="mb-1">Active: {{ user.is_active }}</p>
-                <a href="">Edit</a>
-            </div>
-        {% endfor %}
+    <div class="container-fluid">
+        <div class="d-flex space-between w-75 m-auto align-items-center">
+            <h1 class="my-3 flex-fill">Repositories</h1>
+            <button class="btn btn-success" onclick="window.location.href='/repositories/new-repo'">New Repository
+            </button>
+        </div>
+        <div class="list-group w-75 m-auto">
+            {{ users }}
+            {% for user in users %}
+                <div class="list-group-item">
+                    <h5 class="mb-1">{{ user.username }}</h5>
+                    <p class="mb-1">Sudo: {{ user.is_sudo }}</p>
+                    <p class="mb-1">Wheel: {{ user.is_wheel }}</p>
+                    <p class="mb-1">Gitman: {{ user.is_gitman }}</p>
+                    <p class="mb-1">Admin: {{ user.is_admin }}</p>
+                    <p class="mb-1">Active: {{ user.is_active }}</p>
+                    <a href="">Edit</a>
+                </div>
+            {% endfor %}
+        </div>
     </div>
+
 
 {% endblock %}
