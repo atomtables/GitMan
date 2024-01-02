@@ -14,7 +14,7 @@ from git import Repo
 import settings as s
 
 app = Flask(__name__)
-app.secret_key = "yowhatsgoodmyboy"
+app.secret_key = "e87d7a3c64e8fcd08c30c3404b7902e1f1f6613e114938bbd3081206f66cb179"
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 db_path = os.path.join(BASE_DIR, "users.db")
 
@@ -32,7 +32,6 @@ cursor.execute('''
 
 conn.commit(); cursor.close(); conn.close()
 
-
 @app.context_processor
 def inject_user():
     if request.cookies.get('username') is None or request.cookies.get('userhash') is None:
@@ -44,19 +43,15 @@ def inject_user():
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM users WHERE username = ?', (request.cookies.get('username'),))
     existing_user = cursor.fetchone()
-    if existing_user is None:
-        return dict(user={
-            'is_authenticated': False,
-            'username': None
-        })
-    if existing_user[2] != request.cookies.get('userhash'):
+    if existing_user is None or existing_user[2] != request.cookies.get('userhash'):
         return dict(user={
             'is_authenticated': False,
             'username': None
         })
     return dict(user={
         'is_authenticated': True,
-        'username': request.cookies.get('username')
+        'username': request.cookies.get('username'),
+        'access': "sudo" if is_user_in_group(request.cookies.get('username'), s.admin_groups) else ("is_rw" if is_user_in_group(request.cookies.get('username'), s.rw_groups) else ("is_r" if is_user_in_group(request.cookies.get('username'), s.r_groups) else "none"))
     })
 
 
