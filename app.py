@@ -238,7 +238,7 @@ def repositories():
 @login_required
 def userlist():
     users = []
-    user_list = list(map(lambda i: i[0], filter(lambda i: int(i[2]) >= 1000, pwd.getpwall())))
+    user_list = list(map(lambda i: i[0], filter(lambda i: int(i[2]) >= 1000, pwd.getpwall()))).remove("nobody")
     for user in user_list:
         users.append({
             'username': user,
