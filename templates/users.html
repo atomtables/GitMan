@@ -3,8 +3,8 @@
 {% block content %}
     <div class="container-fluid">
         <div class="d-flex space-between w-75 m-auto align-items-center">
-            <h1 class="my-3 flex-fill">Repositories</h1>
-            <button class="btn btn-success" onclick="window.location.href='/repositories/new-repo'">New Repository
+            <h1 class="my-3 flex-fill">Users</h1>
+            <button class="btn btn-success" onclick="window.location.href='/repositories/new-repo'">New User
             </button>
         </div>
         <div class="list-group w-75 m-auto">
@@ -12,6 +12,9 @@
                 <div class="list-group-item">
                     <div class="d-flex">
                         <h5 class="mb-1">{{ user.username }}</h5>
+                        {% if user.is_sudo %}
+                            <span class="badge text-bg-success">Admin</span>
+                        {% endif %}
                     </div>
                 </div>
             {% endfor %}
