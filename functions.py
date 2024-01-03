@@ -53,3 +53,22 @@ def is_password_change_required(username):
     except subprocess.CalledProcessError:
         return None
 
+def user_in_admin_group(user: str, admin_groups: list) -> bool:
+    for group in admin_groups:
+        if is_user_in_group(user, group):
+            return True
+    return False
+
+
+def user_in_rw_group(user: str, rw_groups: list) -> bool:
+    for group in rw_groups:
+        if is_user_in_group(user, group):
+            return True
+    return False
+
+
+def user_in_r_group(user: str, r_groups: list) -> bool:
+    for group in r_groups:
+        if is_user_in_group(user, group):
+            return True
+    return False
