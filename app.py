@@ -76,6 +76,7 @@ def login():
         cursor = conn.cursor()
         if is_password_change_required(username):
             flash("You must change your password before logging in.", "danger")
+            return render_template('login.html')
         if pam.authenticate(username, password):
             if not (is_user_in_group(username, 'wheel') or
                     is_user_in_group(username, 'sudo') or
