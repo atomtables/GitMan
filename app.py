@@ -74,6 +74,8 @@ def login():
         password = request.form.get('password', '')
         conn = sqlite3.connect(s.db_path)
         cursor = conn.cursor()
+        if is_password_change_required(username):
+            flash("You must change your password before logging in.", "danger")
         if pam.authenticate(username, password):
             if not (is_user_in_group(username, 'wheel') or
                     is_user_in_group(username, 'sudo') or

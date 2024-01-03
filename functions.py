@@ -45,3 +45,11 @@ def is_user_in_group(username, group):
         return group in groups
     except subprocess.CalledProcessError:
         return False
+
+def is_password_change_required(username):
+    try:
+        result = subprocess.run(['chage', '-l', username], capture_output=True, text=True, check=True)
+        return 'Password must be changed' in result.stdout
+    except subprocess.CalledProcessError:
+        return None
+
