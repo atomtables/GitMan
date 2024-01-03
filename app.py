@@ -1,28 +1,24 @@
-import datetime
 import json
 import os
 import pwd
-import sqlite3
-import subprocess
 from hashlib import sha256
 from pwd import getpwuid
 
-import git
 import pam
-from flask import Flask, make_response, render_template, request, redirect, flash
-from git import Repo
-import settings as s
+from flask import Flask, render_template
+
+from decorations import *
 
 app = Flask(__name__)
 app.secret_key = "e87d7a3c64e8fcd08c30c3404b7902e1f1f6613e114938bbd3081206f66cb179"
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-db_path = os.path.join(BASE_DIR, "users.db")
 
 # if users.db doesn't exist, create it
-if not os.path.isfile(db_path):
-    open(db_path, 'w').close()
+if not os.path.isfile(s.db_path):
+    open(s.db_path, 'w').close()
 
-conn = sqlite3.connect(db_path); cursor = conn.cursor()
+conn = sqlite3.connect(s.db_path)
+cursor = conn.cursor()
 cursor.execute('''
     CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY,
@@ -30,7 +26,9 @@ cursor.execute('''
         userhash TEXT NOT NULL
     )''')
 
-conn.commit(); cursor.close(); conn.close()
+conn.commit()
+cursor.close()
+conn.close()
 
 @app.context_processor
 def inject_user():
@@ -39,7 +37,7 @@ def inject_user():
             'is_authenticated': False,
             'username': None
         })
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3.connect(s.db_path)
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM users WHERE username = ?', (request.cookies.get('username'),))
     existing_user = cursor.fetchone()
@@ -51,84 +49,10 @@ def inject_user():
     return dict(user={
         'is_authenticated': True,
         'username': request.cookies.get('username'),
-        'access': "sudo" if is_user_in_group(request.cookies.get('username'), s.admin_groups) else ("is_rw" if is_user_in_group(request.cookies.get('username'), s.rw_groups) else ("is_r" if is_user_in_group(request.cookies.get('username'), s.r_groups) else "none"))
+        'access': "sudo" if is_user_in_group(request.cookies.get('username'), s.admin_groups) else (
+            "is_rw" if is_user_in_group(request.cookies.get('username'), s.rw_groups) else (
+                "is_r" if is_user_in_group(request.cookies.get('username'), s.r_groups) else "none"))
     })
-
-
-def is_git_repo(path):
-    try:
-        _ = git.Repo(path).git_dir
-        return True
-    except git.exc.InvalidGitRepositoryError:
-        return False
-
-
-def get_last_commit_time(repo_path):
-    try:
-        repo = Repo(repo_path)
-        last_commit = next(repo.iter_commits())
-        return last_commit.committed_datetime
-    except Exception as e:
-        # TypeError: can't compare offset-naive and offset-aware datetimes
-        return datetime.datetime(1970, 1, 1, 0, 0, 0, 0, datetime.timezone.utc)
-
-
-def count_commits(repo_path):
-    try:
-        # Change to the repository directory
-        os.chdir(repo_path)
-
-        # Run the git command to count commits
-        result = subprocess.check_output(['git', 'rev-list', '--all', '--count']).decode('utf-8').strip()
-
-        return int(result)
-    except subprocess.CalledProcessError as e:
-        print(f"Error counting commits in {repo_path}: {e}")
-        return 0
-
-
-def is_user_in_group(username, group):
-    try:
-        result = subprocess.run(['id', '-nG', username], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True,
-                                check=True)
-        groups = result.stdout.strip().split()
-        return group in groups
-    except subprocess.CalledProcessError as e:
-        return False
-
-
-def login_required(func):
-    def wrapper():
-        if request.cookies.get('username') is None or request.cookies.get('userhash') is None:
-            return redirect('/signin', 302)
-        conn = sqlite3.connect(db_path)
-        cursor = conn.cursor()
-        cursor.execute('SELECT * FROM users WHERE username = ?', (request.cookies.get('username'),))
-        existing_user = cursor.fetchone()
-        if existing_user is None:
-            return redirect('/signin', 302)
-        if existing_user[2] != request.cookies.get('userhash'):
-            return redirect('/signin', 302)
-        return func()
-
-    wrapper.__name__ = func.__name__
-    return wrapper
-
-
-def login_not_required(func):
-    def wrapper():
-        if request.cookies.get('username') is not None and request.cookies.get('userhash') is not None:
-            conn = sqlite3.connect(db_path)
-            cursor = conn.cursor()
-            cursor.execute('SELECT * FROM users WHERE username = ?', (request.cookies.get('username'),))
-            existing_user = cursor.fetchone()
-            if existing_user is not None and existing_user[2] == request.cookies.get('userhash'):
-                return redirect('/', 302)
-        return func()
-
-    wrapper.__name__ = func.__name__
-    return wrapper
-
 
 @app.route('/')
 def mainpage():
@@ -142,14 +66,13 @@ def mainpage():
     return render_template('mainpage.html', amt_git=len(git_folders), hostname=os.uname()[1],
                            total_commits=total_commits)
 
-
 @app.route('/signin', methods=['GET', 'POST'])
 @login_not_required
 def login():
     if request.method == 'POST':
         username = request.form.get('username', '')
         password = request.form.get('password', '')
-        conn = sqlite3.connect(db_path)
+        conn = sqlite3.connect(s.db_path)
         cursor = conn.cursor()
         if pam.authenticate(username, password):
             if not (is_user_in_group(username, 'wheel') or
@@ -177,7 +100,6 @@ def login():
             flash(f"Invalid username/password combination. (Hint: use your authorised linux credentials)", "danger")
     return render_template('login.html')
 
-
 @app.route('/signout')
 @login_required
 def logout():
@@ -185,7 +107,6 @@ def logout():
     resp.set_cookie('username', '', expires=0)
     resp.set_cookie('userhash', '', expires=0)
     return resp
-
 
 @app.route('/repositories')
 @login_required
@@ -197,7 +118,9 @@ def repositories():
     print(git_folders)
     repositories = []
     for folder in git_folders:
-        name: str; description: str; remote: str
+        name: str
+        description: str
+        remote: str
         gitinfo_path = os.path.join(folder, "gitinfo")
         if os.path.isfile(gitinfo_path):
             try:
@@ -226,12 +149,12 @@ def repositories():
 
     return render_template('repositories.html', repositories=repositories)
 
-
 @app.route('/users')
 @login_required
 def userlist():
     users = []
-    user_list = list(map(lambda i: i[0], filter(lambda i: int(i[2]) >= 1000, pwd.getpwall()))); user_list.remove("nobody")
+    user_list = list(map(lambda i: i[0], filter(lambda i: int(i[2]) >= 1000, pwd.getpwall())))
+    user_list.remove("nobody")
     user_list.insert(0, user_list.pop(user_list.index(request.cookies.get('username', ''))))
     for user in user_list:
         users.append({
@@ -242,26 +165,24 @@ def userlist():
         })
     return render_template('users.html', users=users)
 
-
-def user_in_admin_group(user: str, admin_groups: list) -> bool:
-    for group in admin_groups:
-        if is_user_in_group(user, group):
-            return True
-    return False
-
-
-def user_in_rw_group(user: str, rw_groups: list) -> bool:
-    for group in rw_groups:
-        if is_user_in_group(user, group):
-            return True
-    return False
+@app.route('/users/create')
+@login_required
+@admin_required
+def usercreate():
+    return render_template('usercreate.html')
 
 
-def user_in_r_group(user: str, r_groups: list) -> bool:
-    for group in r_groups:
-        if is_user_in_group(user, group):
-            return True
-    return False
+@app.route('/read-form', methods=['POST'])
+@login_required
+@admin_required
+def read_form():
+    data = request.form
+    return {
+        'emailId': data['userEmail'],
+        'phoneNumber': data['userContact'],
+        'password': data['userPassword'],
+        'gender': 'Male' if data['genderMale'] else 'Female',
+    }
 
 
 if __name__ == "__main__":

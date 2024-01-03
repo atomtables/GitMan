@@ -4,8 +4,7 @@
     <div class="container-fluid">
         <div class="d-flex space-between w-75 m-auto align-items-center">
             <h1 class="my-3 flex-fill">Users</h1>
-            <button class="btn btn-success" onclick="window.location.href='/repositories/new-repo'">New User
-            </button>
+            <a class="btn btn-success" href="/users/create">New User</a>
         </div>
         <div class="list-group w-75 m-auto">
             {% for user in users %}
