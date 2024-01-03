@@ -2,14 +2,6 @@
 <html lang="en" data-bs-theme="dark">
 <head>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <style>
-        .material-symbols-outlined {
-            font-variation-settings: 'FILL' 0,
-            'wght' 400,
-            'GRAD' 0,
-            'opsz' 24
-        }
-    </style>
     <link rel="icon" href="{{ url_for('static', filename='gitman.png') }}"/>
     <!--favicon will be gitman.png-->
     <link rel="apple-touch-icon" href="{{ url_for('static', filename='gitman.png') }}"/>
@@ -45,7 +37,6 @@
             crossorigin="anonymous"></script>
 </head>
 <body>
-{#{% include 'header.html' %}#}
 {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
         <div class="flash-container">
