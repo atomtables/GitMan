@@ -49,7 +49,7 @@ def is_user_in_group(username, group):
 def is_password_change_required(username):
     try:
         result = subprocess.run(['chage', '-l', username], capture_output=True, text=True, check=True)
-        return 'Password must be changed' in result.stdout
+        return 'password must be changed' in result.stdout
     except subprocess.CalledProcessError:
         return None
 
