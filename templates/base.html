@@ -26,10 +26,10 @@
 
         .flash-container {
             position: fixed;
-            top: 54px; /* Adjust to your desired offset */
+            /* top: 54px; */
             right: 0;
-            z-index: 1000; /* Adjust as needed */
-            width: 100%;
+            z-index: 1000;
+            width: 82.5vw;
             padding: 20px;
         }
     </style>
@@ -97,16 +97,20 @@
                 <a href="#" class="d-flex align-items-center link-body-emphasis text-decoration-none dropdown-toggle"
                    data-bs-toggle="dropdown" aria-expanded="false">
                     <span class="material-icons me-1 w-32 h-32">face</span>
-                    <strong>{{ user.username }}</strong>
+                    <strong>{{ user.username if user.is_authenticated else "Sign In" }}</strong>
                 </a>
                 <ul class="dropdown-menu text-small shadow">
-{#                    <li><a class="dropdown-item" href="#">New project...</a></li>#}
-{#                    <li><a class="dropdown-item" href="#">Settings</a></li>#}
-{#                    <li><a class="dropdown-item" href="#">Profile</a></li>#}
-{#                    <li>#}
-{#                        <hr class="dropdown-divider">#}
-{#                    </li>#}
-                    <li><a class="dropdown-item" href="/signout">Sign out</a></li>
+                    {#                    <li><a class="dropdown-item" href="#">New project...</a></li>#}
+                    {#                    <li><a class="dropdown-item" href="#">Settings</a></li>#}
+                    {#                    <li><a class="dropdown-item" href="#">Profile</a></li>#}
+                    {#                    <li>#}
+                    {#                        <hr class="dropdown-divider">#}
+                    {#                    </li>#}
+                    {% if user.is_authenticated %}
+                        <li><a class="dropdown-item" href="/signout">Sign out</a></li>
+                    {% else %}
+                        <li><a class="dropdown-item" href="/signin">Sign in</a></li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
