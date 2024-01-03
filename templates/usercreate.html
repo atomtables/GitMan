@@ -3,21 +3,21 @@
 {% block content %}
     <form class="w-75 m-auto">
         <div class="d-flex justify-content-evenly">
-                <div class="mb-3 me-1">
-                    <label for="username" class="form-label">Username</label>
-                    <input type="text" class="form-control" id="username" aria-describedby="emailHelp">
-                    <div id="emailHelp" class="form-text">The user will set their password on first login.</div>
-                </div>
-                <div class="mb-3 me-1">
-                    <label for="roleSelection" class="form-label"></label>
-                    <select id="roleSelection" class="form-select" aria-describedby="roleSelectionHelp">
-                        <option>No Access</option>
-                        <option>Read-Only</option>
-                        <option>Read-Write</option>
-                        <option>Admin</option>
-                    </select>
-                    <div id="roleSelectionHelp" class="form-text">The user will set their password on first login.</div>
-                </div>
+            <div class="mb-3 me-1">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" class="form-control" id="username" aria-describedby="emailHelp">
+                <div id="emailHelp" class="form-text">The user will set their password on first login.</div>
+            </div>
+            <div class="mb-3 me-1">
+                <label for="roleSelection" class="form-label">Role</label>
+                <select id="roleSelection" class="form-select" aria-describedby="roleSelectionHelp">
+                    <option>No Access</option>
+                    <option>Read-Only</option>
+                    <option>Read-Write</option>
+                    <option>Admin</option>
+                </select>
+                <div id="roleSelectionHelp" class="form-text">The user will set their password on first login.</div>
+            </div>
         </div>
         <div class="mb-3 form-check">
             <input type="checkbox" class="form-check-input" id="exampleCheck1">
