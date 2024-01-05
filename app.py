@@ -5,6 +5,7 @@ from hashlib import sha256
 from pwd import getpwuid
 
 import pam
+import werkzeug
 from flask import Flask, render_template
 
 from decorations import *
@@ -180,12 +181,16 @@ def usercreate():
 @admin_required
 def read_form():
     data = request.form
-    return {
-        'emailId': data['userEmail'],
-        'phoneNumber': data['userContact'],
-        'password': data['userPassword'],
-        'gender': 'Male' if data['genderMale'] else 'Female',
-    }
+    try:
+        return {
+            'emailId': data['userEmail'],
+            'phoneNumber': data['userContact'],
+            'password': data['userPassword'],
+            'gender': 'Male' if data['genderMale'] else 'Female',
+        }
+    except werkzeug.exceptions.BadRequestKeyError:
+        flash("Please fill in all the fields.", "danger")
+        return redirect('/users/create', 302)
 
 
 if __name__ == "__main__":
