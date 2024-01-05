@@ -184,9 +184,9 @@ def read_form():
     try:
         return {
             'username': data['username'],
-            'phoneNumber': data['userContact'],
-            'password': data['userPassword'],
-            'gender': 'Male' if data['genderMale'] else 'Female',
+            'phoneNumber': data['roleSelection'],
+            'password': data['createCheck'],
+            'gender': 'Male' if data['sshCheck'] else 'Female',
         }
     except werkzeug.exceptions.BadRequestKeyError:
         flash("Please fill in all the fields.", "danger")
