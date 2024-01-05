@@ -48,7 +48,7 @@ def login_not_required(func):
 
 def admin_required(func):
     def wrapper():
-        if not (user_in_admin_group(request.cookies.get('username'), s.admin_groups)):
+        if not (user_in_group(request.cookies.get('username'), s.admin_groups)):
             flash("You are not authorised to use this service.", "danger")
             return redirect('/', 302)
         return func()
