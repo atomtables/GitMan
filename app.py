@@ -175,7 +175,7 @@ def usercreate():
     return render_template('usercreate.html')
 
 
-@app.route('/read-form', methods=['POST'])
+@app.route('/users/create/read', methods=['POST'])
 @login_required
 @admin_required
 def read_form():
