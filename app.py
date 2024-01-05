@@ -162,9 +162,9 @@ def userlist():
     for user in user_list:
         users.append({
             'username': user,
-            'is_sudo': user_in_admin_group(user, s.admin_groups),
-            'is_rw': user_in_rw_group(user, s.rw_groups),
-            'is_r': user_in_r_group(user, s.r_groups)
+            'is_sudo': user_in_group(user, s.admin_groups),
+            'is_rw': user_in_group(user, s.rw_groups),
+            'is_r': user_in_group(user, s.r_groups)
         })
     return render_template('users.html', users=users)
 

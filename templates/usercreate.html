@@ -11,7 +11,7 @@
                 <div class="mb-3 me-1">
                     <label for="username" class="form-label">Username</label>
                     <input type="text" class="form-control" id="username" aria-describedby="emailHelp">
-                    <div id="emailHelp" class="form-text">The user will set their password on first login.</div>
+                    <div id="usernameHelp" class="form-text">The user will set their password on first login.</div>
                 </div>
                 <div class="mb-3 me-1">
                     <label for="roleSelection" class="form-label">Role</label>
@@ -24,8 +24,13 @@
                 </div>
             </div>
             <div class="mb-3 form-check">
-                <input type="checkbox" class="form-check-input" id="exampleCheck1">
-                <label class="form-check-label" for="exampleCheck1">Check me out</label>
+                <input type="checkbox" class="form-check-input" id="createCheck">
+                <label class="form-check-label" for="createCheck">Allow user to create repositories</label>
+                <div id="createCheckHelp" class="form-text">This will only be valid if the user is Read-Write.</div>
+            </div>
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="sshCheck">
+                <label class="form-check-label" for="sshCheck">Allow user to log in via SSH</label>
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
