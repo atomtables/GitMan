@@ -183,9 +183,9 @@ def read_form():
     data = request.form
     return {
             'username': data['username'],
-            'phoneNumber': data['roleSelection'],
-            'password': data['createCheck'],
-            'gender': 'Male' if data['sshCheck'] else 'Female',
+            'role': data['roleSelection'],
+            'allowRepositories': data.get('createCheck', False),
+            'allowSsh': data.get('sshCheck', False),
         }
 
 
