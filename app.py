@@ -190,7 +190,7 @@ def read_form():
         }
     except werkzeug.exceptions.BadRequestKeyError:
         flash("Please fill in all the fields.", "danger")
-        return redirect('/users/create', 302)
+        # return redirect('/users/create', 302)
 
 
 if __name__ == "__main__":
