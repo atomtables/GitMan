@@ -181,16 +181,12 @@ def usercreate():
 @admin_required
 def read_form():
     data = request.form
-    try:
-        return {
+    return {
             'username': data['username'],
             'phoneNumber': data['roleSelection'],
             'password': data['createCheck'],
             'gender': 'Male' if data['sshCheck'] else 'Female',
         }
-    except werkzeug.exceptions.BadRequestKeyError as e:
-        flash("Please fill in all the fields.", "danger")
-        return e
 
 
 if __name__ == "__main__":
