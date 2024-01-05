@@ -188,9 +188,9 @@ def read_form():
             'password': data['createCheck'],
             'gender': 'Male' if data['sshCheck'] else 'Female',
         }
-    except werkzeug.exceptions.BadRequestKeyError:
+    except werkzeug.exceptions.BadRequestKeyError as e:
         flash("Please fill in all the fields.", "danger")
-        # return redirect('/users/create', 302)
+        return e
 
 
 if __name__ == "__main__":
