@@ -183,7 +183,7 @@ def read_form():
     data = request.form
     try:
         return {
-            'emailId': data['userEmail'],
+            'username': data['username'],
             'phoneNumber': data['userContact'],
             'password': data['userPassword'],
             'gender': 'Male' if data['genderMale'] else 'Female',
