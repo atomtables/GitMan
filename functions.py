@@ -82,7 +82,7 @@ def create_new_user(username: str, role: str, create_repos: bool, use_ssh: bool)
             return False
         return False
 
-    if role == "ro":
+    if role == "Read-Only":
         try:
             subprocess.run(['sudo', 'usermod', '-aG', 'gitread', username], check=True)
         except subprocess.CalledProcessError:
@@ -91,7 +91,7 @@ def create_new_user(username: str, role: str, create_repos: bool, use_ssh: bool)
             except subprocess.CalledProcessError:
                 return False
             return False
-    elif role == "rw":
+    elif role == "Read-Write":
         try:
             subprocess.run(['sudo', 'usermod', '-aG', 'gitwrite', username], check=True)
         except subprocess.CalledProcessError:
@@ -100,7 +100,7 @@ def create_new_user(username: str, role: str, create_repos: bool, use_ssh: bool)
             except subprocess.CalledProcessError:
                 return False
             return False
-    elif role == "admin":
+    elif role == "Admin":
         try:
             subprocess.run(['sudo', 'usermod', '-aG', 'sudo', username], check=True)
         except subprocess.CalledProcessError:
