@@ -59,7 +59,7 @@ def user_in_group(user: str, group: list) -> bool:
             return True
     return False
 
-def create_new_user(username: str):
+def create_new_user(username: str, role: str, create_repos: bool, use_ssh: bool):
     """
     Commands required for creating a new user:
     - *sudo* useradd username;
@@ -81,20 +81,53 @@ def create_new_user(username: str):
         except subprocess.CalledProcessError:
             return False
         return False
-    try:
-        subprocess.run(['sudo', 'usermod', '-aG', 'gitrepos', username], check=True)
-    except subprocess.CalledProcessError:
+
+    if role == "ro":
         try:
-            subprocess.run(['sudo', 'userdel', username], check=True)
+            subprocess.run(['sudo', 'usermod', '-aG', 'gitread', username], check=True)
         except subprocess.CalledProcessError:
+            try:
+                subprocess.run(['sudo', 'userdel', username], check=True)
+            except subprocess.CalledProcessError:
+                return False
             return False
-        return False
-    try:
-        subprocess.run(['sudo', 'usermod', '-aG', 'ssh-users', username], check=True)
-    except subprocess.CalledProcessError:
+    elif role == "rw":
         try:
-            subprocess.run(['sudo', 'userdel', username], check=True)
+            subprocess.run(['sudo', 'usermod', '-aG', 'gitwrite', username], check=True)
         except subprocess.CalledProcessError:
+            try:
+                subprocess.run(['sudo', 'userdel', username], check=True)
+            except subprocess.CalledProcessError:
+                return False
             return False
-        return False
+    elif role == "admin":
+        try:
+            subprocess.run(['sudo', 'usermod', '-aG', 'sudo', username], check=True)
+        except subprocess.CalledProcessError:
+            try:
+                subprocess.run(['sudo', 'userdel', username], check=True)
+            except subprocess.CalledProcessError:
+                return False
+            return False
+
+    if create_repos:
+        try:
+            subprocess.run(['sudo', 'usermod', '-aG', 'gitrepos', username], check=True)
+        except subprocess.CalledProcessError:
+            try:
+                subprocess.run(['sudo', 'userdel', username], check=True)
+            except subprocess.CalledProcessError:
+                return False
+            return False
+
+    if use_ssh:
+        try:
+            subprocess.run(['sudo', 'usermod', '-aG', 'ssh-users', username], check=True)
+        except subprocess.CalledProcessError:
+            try:
+                subprocess.run(['sudo', 'userdel', username], check=True)
+            except subprocess.CalledProcessError:
+                return False
+            return False
+
     return True
