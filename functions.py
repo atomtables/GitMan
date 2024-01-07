@@ -71,62 +71,76 @@ def create_new_user(username: str, role: str, create_repos: bool, use_ssh: bool)
     """
     try:
         subprocess.run(['sudo', 'useradd', username], check=True)
-    except subprocess.CalledProcessError:
+    except subprocess.CalledProcessError as e:
+        print(e)
         return False
+
     try:
         subprocess.run(['sudo', 'passwd', username, '--expire'], check=True)
-    except subprocess.CalledProcessError:
+    except subprocess.CalledProcessError as e:
+        print(e)
         try:
             subprocess.run(['sudo', 'userdel', username], check=True)
-        except subprocess.CalledProcessError:
+        except subprocess.CalledProcessError as e:
+            print(e)
             return False
         return False
 
     if role == "Read-Only":
         try:
             subprocess.run(['sudo', 'usermod', '-aG', 'gitread', username], check=True)
-        except subprocess.CalledProcessError:
+        except subprocess.CalledProcessError as e:
+            print(e)
             try:
                 subprocess.run(['sudo', 'userdel', username], check=True)
-            except subprocess.CalledProcessError:
+            except subprocess.CalledProcessError as e:
+                print(e)
                 return False
             return False
     elif role == "Read-Write":
         try:
             subprocess.run(['sudo', 'usermod', '-aG', 'gitwrite', username], check=True)
-        except subprocess.CalledProcessError:
+        except subprocess.CalledProcessError as e:
+            print(e)
             try:
                 subprocess.run(['sudo', 'userdel', username], check=True)
-            except subprocess.CalledProcessError:
+            except subprocess.CalledProcessError as e:
+                print(e)
                 return False
             return False
     elif role == "Admin":
         try:
             subprocess.run(['sudo', 'usermod', '-aG', 'sudo', username], check=True)
-        except subprocess.CalledProcessError:
+        except subprocess.CalledProcessError as e:
+            print(e)
             try:
                 subprocess.run(['sudo', 'userdel', username], check=True)
-            except subprocess.CalledProcessError:
+            except subprocess.CalledProcessError as e:
+                print(e)
                 return False
             return False
 
     if create_repos:
         try:
             subprocess.run(['sudo', 'usermod', '-aG', 'gitrepos', username], check=True)
-        except subprocess.CalledProcessError:
+        except subprocess.CalledProcessError as e:
+            print(e)
             try:
                 subprocess.run(['sudo', 'userdel', username], check=True)
-            except subprocess.CalledProcessError:
+            except subprocess.CalledProcessError as e:
+                print(e)
                 return False
             return False
 
     if use_ssh:
         try:
             subprocess.run(['sudo', 'usermod', '-aG', 'ssh-users', username], check=True)
-        except subprocess.CalledProcessError:
+        except subprocess.CalledProcessError as e:
+            print(e)
             try:
                 subprocess.run(['sudo', 'userdel', username], check=True)
-            except subprocess.CalledProcessError:
+            except subprocess.CalledProcessError as e:
+                print(e)
                 return False
             return False
 
