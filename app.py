@@ -181,6 +181,14 @@ def usercreate():
 @admin_required
 def read_form():
     data = request.form
+    return {
+        'username': data.get('username', ''),
+        'role': data.get('roleSelection', ''),
+        'create_repos': data.get('createCheck', '') == "on",
+        'use_ssh': data.get('sshCheck', '') == "on"
+    }
+    """
+    data = request.form
     if data.get('username', True):
         flash("You must enter a username.", "danger")
         return redirect('/users/create', 302)
@@ -199,6 +207,7 @@ def read_form():
 
     flash(f"Failed to create user {data['username']}. Please try again, or check system logs.", "danger")
     return redirect('/users/create', 302)
+    """
 
 
 if __name__ == "__main__":
