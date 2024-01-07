@@ -182,10 +182,10 @@ def usercreate():
 def read_form():
 
     data = request.form
-    if data.get('username', True):
+    if not data.get('username', False):
         flash("You must enter a username.", "danger")
         return redirect('/users/create', 302)
-    if data.get('roleSelection', True) or data.get('roleSelection', True) not in ['No Access', 'Read-Only', 'Read-Write', 'Admin']:
+    if not data.get('roleSelection', False) or data.get('roleSelection', False) not in ['No Access', 'Read-Only', 'Read-Write', 'Admin']:
         flash("You must select a role.", "danger")
         return redirect('/users/create', 302)
 
