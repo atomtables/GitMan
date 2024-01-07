@@ -58,3 +58,43 @@ def user_in_group(user: str, group: list) -> bool:
         if is_user_in_group(user, group):
             return True
     return False
+
+def create_new_user(username: str):
+    """
+    Commands required for creating a new user:
+    - *sudo* useradd username;
+    - *sudo* passwd username --expire; so they can set their own password on first login
+    - depending on role: *sudo* usermod -aG *role* username
+    - depending on if they are allowed to create repos: *sudo* usermod -aG gitrepos username
+    - if user is allowed ssh access: *sudo* usermod -aG ssh-users username
+    :return:
+    """
+    try:
+        subprocess.run(['sudo', 'useradd', username], check=True)
+    except subprocess.CalledProcessError:
+        return False
+    try:
+        subprocess.run(['sudo', 'passwd', username, '--expire'], check=True)
+    except subprocess.CalledProcessError:
+        try:
+            subprocess.run(['sudo', 'userdel', username], check=True)
+        except subprocess.CalledProcessError:
+            return False
+        return False
+    try:
+        subprocess.run(['sudo', 'usermod', '-aG', 'gitrepos', username], check=True)
+    except subprocess.CalledProcessError:
+        try:
+            subprocess.run(['sudo', 'userdel', username], check=True)
+        except subprocess.CalledProcessError:
+            return False
+        return False
+    try:
+        subprocess.run(['sudo', 'usermod', '-aG', 'ssh-users', username], check=True)
+    except subprocess.CalledProcessError:
+        try:
+            subprocess.run(['sudo', 'userdel', username], check=True)
+        except subprocess.CalledProcessError:
+            return False
+        return False
+    return True
