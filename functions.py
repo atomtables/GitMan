@@ -12,7 +12,6 @@ def is_git_repo(path):
     except git.exc.InvalidGitRepositoryError:
         return False
 
-
 def get_last_commit_time(repo_path):
     try:
         repo = Repo(repo_path)
@@ -21,7 +20,6 @@ def get_last_commit_time(repo_path):
     except Exception:
         # TypeError: can't compare offset-naive and offset-aware datetimes
         return datetime.datetime(1970, 1, 1, 0, 0, 0, 0, datetime.timezone.utc)
-
 
 def count_commits(repo_path):
     try:
@@ -35,7 +33,6 @@ def count_commits(repo_path):
     except subprocess.CalledProcessError as e:
         print(f"Error counting commits in {repo_path}: {e}")
         return 0
-
 
 def is_user_in_group(username, group):
     try:

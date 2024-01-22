@@ -65,19 +65,19 @@
             <hr>
             <ul class="nav nav-pills flex-column mb-auto">
                 <li class="nav-item">
-                    <a href="#" class="nav-link active d-flex" aria-current="page">
+                    <a href="#" class="nav-link {% if request.path == "/" %} active {% else %} link-body-emphasis {% endif %} d-flex" aria-current="page">
                         <span class="material-icons me-1">home</span>
                         Home
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="nav-link link-body-emphasis d-flex">
+                    <a href="#" class="nav-link {% if request.path == "/repositories" %} active {% else %} link-body-emphasis {% endif %} d-flex">
                         <span class="material-icons me-1">dashboard</span>
                         Repositories
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="nav-link link-body-emphasis d-flex">
+                    <a href="#" class="nav-link {% if request.path == "/users" %} active {% else %} link-body-emphasis {% endif %} d-flex">
                         <span class="material-icons me-1">people</span>
                         Users
                     </a>
