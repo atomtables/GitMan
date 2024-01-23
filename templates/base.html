@@ -91,12 +91,6 @@
                     <strong>{{ user.username if user.is_authenticated else "Sign In" }}</strong>
                 </a>
                 <ul class="dropdown-menu text-small shadow">
-                    {#                    <li><a class="dropdown-item" href="#">New project...</a></li>#}
-                    {#                    <li><a class="dropdown-item" href="#">Settings</a></li>#}
-                    {#                    <li><a class="dropdown-item" href="#">Profile</a></li>#}
-                    {#                    <li>#}
-                    {#                        <hr class="dropdown-divider">#}
-                    {#                    </li>#}
                     {% if user.is_authenticated %}
                         <li><a class="dropdown-item" href="/signout">Sign out</a></li>
                     {% else %}
