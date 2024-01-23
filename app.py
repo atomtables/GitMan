@@ -202,5 +202,13 @@ def read_form():
     return redirect('/users/create', 302)
 
 
+@app.route("/repositories/create")
+@login_required
+@admin_required
+def create_repo():
+    return render_template("repocreate.html")
+
+
+
 if __name__ == "__main__":
     app.run()
