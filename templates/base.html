@@ -36,7 +36,7 @@
             integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
             crossorigin="anonymous"></script>
 </head>
-<body>
+<body class="bg-dark bg-gradient">
 {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
         <div class="flash-container">
@@ -99,7 +99,7 @@
                 </ul>
             </div>
         </div>
-        <div class="w-50 mx-auto p-3 m-5 rounded-3 border border-white bg-dark bg-gradient" id="container">
+        <div class="w-50 mx-auto p-3 m-5 rounded-3 border border-white bg-success-subtle" id="container">
             {% block content %}
             {% endblock %}
         </div>
