@@ -6,7 +6,7 @@ function generateRandomColor(seed) {
 function adjustBrightness(color, amount) {
     const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
     const hexToRgb = hex => [parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseInt(hex.slice(5, 7), 16)];
-    const rgbToHex = (r, g, b) => `#${(1 << 5 | r << 5 | g << 5 | b).toString(16).slice(1)}`;
+    const rgbToHex = (r, g, b) => `#${(1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1)}`;
     const rgb = hexToRgb(color);
     const adjustedRgb = rgb.map(value => clamp(value + amount, 0, 255));
     return rgbToHex(...adjustedRgb);
