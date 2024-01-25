@@ -99,7 +99,7 @@
                 </ul>
             </div>
         </div>
-        {% if not custom_content %}
+        {% if not self.custom_content() %}
             <div class="w-50 mx-auto p-3 m-5 rounded-3 border border-white bg-dark" id="container">
                 {% block content %}
                 {% endblock %}
