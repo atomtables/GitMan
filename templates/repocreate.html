@@ -7,17 +7,24 @@
         </div>
         <form class="m-auto" method="post" action="/users/create/read">
             <div>
-                <div class="mb-3 me-1">
-                    <label for="username" class="form-label">Repository Name</label>
-                    <input type="text" class="form-control" id="username" aria-describedby="usernameHelp" name="username">
-                    <div id="usernameHelp" class="form-text">The friendly name of this repository.</div>
-                    <label for="username" class="form-label">Git-Repo Name</label>
-                    <input type="text" class="form-control" id="username" aria-describedby="usernameHelp" name="username">
-                    <div id="usernameHelp" class="form-text">What the URL of the Git-Repo will look like.</div>
+                <div class="mb-3 me-1 d-flex align-between">
+                    <div>
+                        <label for="username" class="form-label">Repository Name</label>
+                        <input type="text" class="form-control" id="username" aria-describedby="usernameHelp"
+                               name="username">
+                        <div id="usernameHelp" class="form-text">The friendly name of this repository.</div>
+                    </div>
+                    <div>
+                        <label for="username" class="form-label">Git-Repo Name</label>
+                        <input type="text" class="form-control" id="username" aria-describedby="usernameHelp"
+                               name="username">
+                        <div id="usernameHelp" class="form-text">What the URL of the Git-Repo will look like.</div>
+                    </div>
                 </div>
                 <div class="mb-3 me-1">
                     <label for="roleSelection" class="form-label">Role</label>
-                    <select id="roleSelection" class="form-select" aria-describedby="roleSelectionHelp" name="roleSelection">
+                    <select id="roleSelection" class="form-select" aria-describedby="roleSelectionHelp"
+                            name="roleSelection">
                         <option name="none">No Access</option>
                         <option name="ro">Read-Only</option>
                         <option name="rw">Read-Write</option>
