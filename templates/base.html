@@ -105,10 +105,12 @@
                 {% endblock %}
             </div>
         {% endif %}
-        <div class="w-100">
-            {% block custom_content %}
-            {% endblock %}
-        </div>
+        {% if self.custom_content() | trim %}
+            <div class="w-100">
+                {% block custom_content %}
+                {% endblock %}
+            </div>
+        {% endif %}
     </main>
 </div>
 </body>
