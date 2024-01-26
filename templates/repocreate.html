@@ -17,7 +17,8 @@
                     <div class="flex-fill m-2">
                         <label for="username" class="form-label">Git-Repo Name</label>
                         <input type="text" class="form-control" id="username" aria-describedby="usernameHelp"
-                               name="username">
+                               name="username"
+                               onchange="document.querySelector('#usernameHelp').textContent = `The name of the Git Repo's URL (/srv/git/${document.querySelector('#username').textContent})`">
                         <div id="usernameHelp" class="form-text">The name of the Git Repo's URL (/srv/git/*)</div>
                     </div>
                 </div>
