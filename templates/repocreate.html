@@ -9,17 +9,17 @@
             <div>
                 <div class="mb-3 me-1 d-flex justify-content-between">
                     <div class="flex-fill m-2">
-                        <label for="username" class="form-label">Repository Name</label>
-                        <input type="text" class="form-control" id="username" aria-describedby="usernameHelp"
+                        <label for="friendlyname" class="form-label">Repository Name</label>
+                        <input type="text" class="form-control" id="friendlyname" aria-describedby="usernameHelp"
                                name="username">
-                        <div id="usernameHelp" class="form-text">The friendly name of this repository.</div>
+                        <div id="friendlynameHelp" class="form-text">The friendly name of this repository.</div>
                     </div>
                     <div class="flex-fill m-2">
-                        <label for="username" class="form-label">Git-Repo Name</label>
-                        <input type="text" class="form-control" id="username" aria-describedby="usernameHelp"
+                        <label for="hardname" class="form-label">Git-Repo Name</label>
+                        <input type="text" class="form-control" id="hardname" aria-describedby="usernameHelp"
                                name="username"
-                               onchange="document.querySelector('#usernameHelp').textContent = `The name of the Git Repo's URL (/srv/git/${document.querySelector('#username').textContent})`">
-                        <div id="usernameHelp" class="form-text">The name of the Git Repo's URL (/srv/git/*)</div>
+                               oninput="document.querySelector('#hardnameHelp').textContent = `The name of the Git Repo's URL (/srv/git/${document.querySelector('#hardname').textContent})`">
+                        <div id="hardnameHelp" class="form-text">The name of the Git Repo's URL (/srv/git/*)</div>
                     </div>
                 </div>
                 <div class="mb-3 me-1">
