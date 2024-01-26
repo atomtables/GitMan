@@ -18,8 +18,8 @@
                         <label for="hardname" class="form-label">Git-Repo Name</label>
                         <input type="text" class="form-control" id="hardname" aria-describedby="usernameHelp"
                                name="username"
-                               oninput="document.querySelector('#hardnameHelp').textContent = `The name of the Git Repo's URL (/srv/git/${document.querySelector('#hardname').value})`">
-                        <div id="hardnameHelp" class="form-text">The name of the Git Repo's URL (/srv/git/*)</div>
+                               oninput="document.querySelector('#hardnameHelp').textContent = `{{ hostname }}:/srv/git/${document.querySelector('#hardname').value})`">
+                        <div id="hardnameHelp" class="form-text">{{ hostname }}:/srv/git/repoName</div>
                     </div>
                 </div>
                 <div class="mb-3 me-1">
