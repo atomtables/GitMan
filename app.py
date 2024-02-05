@@ -5,13 +5,11 @@ from hashlib import sha256
 from pwd import getpwuid
 
 import pam
-import werkzeug
 from flask import Flask, render_template
 
 from decorations import *
 
-app = Flask(__name__)
-app.secret_key = "e87d7a3c64e8fcd08c30c3404b7902e1f1f6613e114938bbd3081206f66cb179"
+app = Flask(__name__); app.secret_key = "e87d7a3c64e8fcd08c30c3404b7902e1f1f6613e114938bbd3081206f66cb179"
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # if users.db doesn't exist, create it
@@ -25,8 +23,8 @@ cursor.execute('''
         id INTEGER PRIMARY KEY,
         username TEXT NOT NULL,
         userhash TEXT NOT NULL
-    )''')
-
+    )
+''')
 conn.commit()
 cursor.close()
 conn.close()
@@ -55,6 +53,10 @@ def inject_user():
                 "is_r" if is_user_in_group(request.cookies.get('username'), s.r_groups) else "none"))
     })
 
+@app.context_processor
+def inject_hostname():
+    return dict(hostname=os.uname()[1])
+
 @app.route('/')
 def mainpage():
     total_commits = 0
@@ -64,8 +66,7 @@ def mainpage():
     for repo_path in git_folders:
         commits = count_commits(repo_path)
         total_commits += commits
-    return render_template('mainpage.html', amt_git=len(git_folders), hostname=os.uname()[1],
-                           total_commits=total_commits)
+    return render_template('mainpage.html', amt_git=len(git_folders), total_commits=total_commits)
 
 @app.route('/signin', methods=['GET', 'POST'])
 @login_not_required
@@ -179,8 +180,7 @@ def usercreate():
 @app.route('/users/create/read', methods=['POST'])
 @login_required
 @admin_required
-def read_form():
-
+def user_form():
     data = request.form
     if not data.get('username', False):
         flash("You must enter a username.", "danger")
